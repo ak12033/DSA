@@ -358,3 +358,125 @@ int main() {
     return 0;
 }
 */
+
+//                                     Number of Islands
+/*
+void bfs(int row, int col, vector<vector<int>>& vis, vector<vector<char>>& grid) {
+      
+    // Mark it visited
+    vis[row][col] = 1; 
+
+    queue <pair<int, int>> q;
+    // Push the node in queue
+    q.push({row, col}); 
+
+    int n = grid.size(); 
+    int m = grid[0].size(); 
+    while(!q.empty()) {
+        int row = q.front().first; 
+        int col = q.front().second; 
+        q.pop(); 
+        // Traverse in the neighbours and mark them if its a land
+        for(int delrow = -1; delrow <= 1; delrow++) {
+            for(int delcol = -1; delcol <= 1; delcol++) {
+                // Not considering diagonals
+                if((delrow == -1 && delcol == 0) || (delrow == 0 && delcol == -1) || (delrow == 1 && delcol == 0) || (delrow == 0 && delcol == 1)) {
+                    int nrow = row + delrow; 
+                    int ncol = col + delcol;
+                    // Neighbour row and column is valid, and is an unvisited land
+                    if(nrow >= 0 && nrow < n && ncol >= 0 && ncol < m && grid[nrow][ncol] == '1' && !vis[nrow][ncol]) {
+                        vis[nrow][ncol] = 1; 
+                        q.push({nrow, ncol}); 
+                    }
+                }
+            }
+        }
+    }
+}
+int numIslands(vector<vector<char>>& grid) {
+
+    int n = grid.size(); 
+    int m = grid[0].size(); 
+
+    // Create visited array and initialise to 0
+    vector<vector<int>> vis(n, vector<int>(m, 0)); 
+
+    int cnt = 0; 
+    for(int row = 0; row < n; row++) {
+        for(int col = 0; col < m; col++) {
+            // if not visited and is a land
+            if(!vis[row][col] && grid[row][col] == '1') {
+                cnt++; 
+                bfs(row, col, vis, grid); 
+            }
+        }
+    }
+    return cnt;
+}
+int main() {
+
+    vector<vector<char>> grid = {
+        {'1', '1', '0', '0', '0'},
+        {'1', '1', '0', '0', '0'},
+        {'0', '0', '1', '0', '0'},
+        {'0', '0', '0', '1', '1'}
+    };
+
+    // Result
+    int result = numIslands(grid);
+    cout << "Number of islands: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                     Rotate String
+/*
+bool rotateString(string s, string goal) {
+
+    if(s.length() != goal.length()) {
+        return false;
+    }
+
+    int len = goal.length();
+    string temp = s + s; 
+    for(int i=0; i<=temp.length() - len; i++) {
+        if(temp.substr(i, len) == goal) {  
+            return true;
+        }
+    }
+    return false;
+}
+int main() {
+
+    string s, goal;
+    cout << "Enter the original string: ";
+    cin >> s;
+    cout << "Enter the rotated string to check: ";
+    cin >> goal;
+
+    if (rotateString(s, goal)) {
+        cout << "true" << endl;
+    } 
+    else {
+        cout << "false" << endl;
+    }
+
+    return 0;
+}
+*/
+
+//                             Count Total Number of Colored Cells
+/*
+long long coloredCells(int n) {
+
+    return 1LL + 2LL * (n - 1) * n;
+}
+int main() {
+
+    int n = 5;
+    cout << "Number of colored cells : " << coloredCells(n) << endl;
+
+    return 0;
+}
+*/

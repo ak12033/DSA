@@ -1,80 +1,74 @@
 #include <iostream>
 #include <vector>
-#include <limits>
+#include <limits.h>
 using namespace std;
 
-//                                                               Bellman Ford
+//                                     Bellman Ford
+/*
+vector<int> bellmanFord(int V, int src, vector<vector<int>>& edges) {
 
-vector<int> bellmanFord(int n, int m, int src, vector<vector<int>> &edges){
-
-    vector<int> dist(n+1, 1e8);
+    vector<int> dist(V, 1e8);
     dist[src] = 0;
 
-    //n-1 times
-    for(int i=1;i<n;i++){
-        //traverse on edge list
-        for(int j=0;j<m;j++){
+    // n-1 times
+    for(int i=1; i<V; i++) {
+        // Traverse on edge list
+        for(int j=0; j<edges.size(); j++) {
             int u = edges[j][0];
             int v = edges[j][1];
             int wt = edges[j][2];
-
-            if(dist[u] != 1e9 && (dist[u] + wt < dist[v])){
-                dist[v] = dist[u] +wt;
+            if(dist[u] != 1e8 && (dist[u] + wt < dist[v])) {
+                dist[v] = dist[u] + wt;
             }
         }
     }
-
-    //check for negative cycle 
-    bool flag =0; 
-    for(int j=0;j<m;j++){
+    // Check for negative cycle 
+    bool flag = 0; 
+    for(int j=0; j<edges.size(); j++) {
         int u = edges[j][0];
         int v = edges[j][1];
         int wt = edges[j][2];
-
-        if(dist[u] != 1e9 && (dist[u] + wt < dist[v])){
-            flag =1;
+        if(dist[u] != 1e8 && (dist[u] + wt < dist[v])) {
+            flag = 1;
         }
     }
-
-    //if negative cycle then flag =1
-    if(flag == 0){
+    // If negative cycle is not present
+    if(flag == 0) {
        return dist;
     }
-    return{}; 
+    return {-1}; 
 }
-
 int main() {
-    int n, m, src;
 
-    cout << "Enter the number of vertices: ";
+    int n;
+    cout << "Enter the number of nodes : " << endl;
     cin >> n;
-    cout << "Enter the number of edges: ";
+
+    int m;
+    cout << "Enter the number of edges : " << endl;
     cin >> m;
 
     vector<vector<int>> edges(m, vector<int>(3));
-
-    cout << "Enter the edges in the format (u v wt) where u and v are vertices and wt is the weight:" << endl;
-    for (int i = 0; i < m; ++i) {
+    cout << "Enter the edges : " << endl;
+    for (int i=0; i<m; i++) {
         cin >> edges[i][0] >> edges[i][1] >> edges[i][2];
     }
 
+    int src;
     cout << "Enter the source vertex: ";
     cin >> src;
 
-    vector<int> distances = bellmanFord(n, m, src, edges);
+    vector<int> distances = bellmanFord(n, src, edges);
 
-    if (distances.empty()) {
+    if (distances.size() == 1) {
         cout << "Graph contains a negative weight cycle." << endl;
-    } else {
+    } 
+    else {
         cout << "Vertex distances from source " << src << ":" << endl;
-        for (int i = 1; i <= n; ++i) {
-            if (distances[i] == numeric_limits<int>::max()) {
-                cout << "Vertex " << i << ": INF" << endl;
-            } else {
-                cout << "Vertex " << i << ": " << distances[i] << endl;
-            }
+        for (int i=0; i<n; i++) {
+            cout << "Vertex " << i << ": " << distances[i] << endl;
         }
     }
-
     return 0;
 }
+*/

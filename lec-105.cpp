@@ -1,155 +1,149 @@
 #include <iostream>
-#include<vector>
+#include <vector>
 using namespace std;
 
-//                                         Maximum sum of non-adjacent elements
+//                        Maximum sum of non-adjacent elements
+//                                         OR
+//                                    House Robber
 
-//                                                    approach 1
-
+//                                     Recursive
 /*
-int solveMem(vector<int> &nums, int n, vector<int> &dp){
-    //base case
-    if(n < 0){
+int solve(vector<int>& nums, int n) {
+    
+    // Base Case
+    if(n < 0) {
         return 0;
     }
-    if(n == 0){
+
+    if(n == 0) {
         return nums[0];
     }
+    
+    int incl = solve(nums, n-2) + nums[n];
+    int excl = solve(nums, n-1) + 0;
+    
+    return max(incl, excl);
+} 
+int maximumNonAdjacentSum(vector<int>& nums) {
+
+    int n = nums.size();
+    int ans = solve(nums, n-1);
+    return ans;
+}
+int main() {
+    
+    vector<int> nums = {9, 9, 8, 2};
+    
+    // Result
+    int result = maximumNonAdjacentSum(nums);
+    cout << "Maximum Non-Adjacent Sum: " << result << endl;
+    
+    return 0;
+}
+*/
+//                                     Top-Down
+/*
+int solve(vector<int>& nums, int n, vector<int>& dp) {
+
+    // Base Case
+    if(n < 0) {
+        return 0;
+    }
+
+    if(n == 0) {
+        return nums[0];
+    }
+
     if(dp[n] != -1) {
         return dp[n];
     }
     
-    int incl = solveMem(nums, n-2, dp) + nums[n];
-    int excl = solveMem(nums, n-1, dp) + 0;
+    int incl = solve(nums, n-2, dp) + nums[n];
+    int excl = solve(nums, n-1, dp) + 0;
     
     dp[n] = max(incl, excl);
     return dp[n];
 } 
+int maximumNonAdjacentSum(vector<int>& nums) {
 
-int maximumNonAdjacentSum(vector<int> &nums){
-    // Write your code here.
     int n = nums.size();
-    vector<int> dp(n,-1);
-    return solveMem(nums, n-1, dp);
+    vector<int> dp(n, -1);
+    return solve(nums, n-1, dp);
 }
-
 int main() {
-    int n;
-    cout << "Enter the number of elements: ";
-    cin >> n;
     
-    if (n <= 0) {
-        cout << "Array size must be positive!" << endl;
-        return 1;
-    }
+    vector<int> nums = {9, 9, 8, 2};
     
-    vector<int> nums(n);
-    cout << "Enter the elements: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> nums[i];
-    }
-    
+    // Result
     int result = maximumNonAdjacentSum(nums);
     cout << "Maximum Non-Adjacent Sum: " << result << endl;
     
     return 0;
 }
 */
-
-//                                                      approach 2
-
+//                                     Bottom-Up
 /*
-int solveTab(vector<int> &nums){
+int solve(vector<int>& nums) {
 
     int n = nums.size();
-    vector<int> dp(n,0);
+    vector<int> dp(n, 0);
         
     dp[0] = nums[0];
-    if (n > 1) {
-        dp[1] = max(nums[0], nums[1]);
-    }
-        
-    for(int i = 2; i<n; i++){
+    dp[1] = max(nums[0], nums[1]);
+            
+    for(int i=2; i<n; i++) {
         int incl = dp[i-2] + nums[i];
         int excl = dp[i-1] + 0;
         dp[i] = max(incl, excl);
     }
-       
     return dp[n-1];
 }
-
 int maximumNonAdjacentSum(vector<int> &nums){
-    // Write your code here.
-    return solveTab(nums); 
-}
 
+    if(nums.size() == 1) {
+        return nums[0];
+    }
+    return solve(nums);
+}
 int main() {
-    int n;
-    cout << "Enter the number of elements: ";
-    cin >> n;
     
-    if (n <= 0) {
-        cout << "Array size must be positive!" << endl;
-        return 1;
-    }
+    vector<int> nums = {9, 9, 8, 2};
     
-    vector<int> nums(n);
-    cout << "Enter the elements: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> nums[i];
-    }
-    
+    // Result
     int result = maximumNonAdjacentSum(nums);
     cout << "Maximum Non-Adjacent Sum: " << result << endl;
     
     return 0;
 }
 */
-
-//                                                      approach 3
-
-int solveTab(vector<int> &nums){
-
-    int n = nums.size();
+//                                  Space-Optimised
+/*
+int solve(vector<int>& nums) {
 
     int prev2 = 0;
     int prev1 = nums[0];
         
-    for(int i = 1; i<n; i++){
+    for(int i=1; i<nums.size(); i++){
         int incl = prev2 + nums[i];
         int excl = prev1 + 0;
-
-        int ans = max(incl, excl);
+        int curr = max(incl, excl);
         prev2 = prev1;
-        prev1 = ans;
+        prev1 = curr;
     }
-       
     return prev1;
 }
+int maximumNonAdjacentSum(vector<int>& nums) {
 
-int maximumNonAdjacentSum(vector<int> &nums){
-    // Write your code here.
-    return solveTab(nums); 
+    return solve(nums); 
 }
-
 int main() {
-    int n;
-    cout << "Enter the number of elements: ";
-    cin >> n;
     
-    if (n <= 0) {
-        cout << "Array size must be positive!" << endl;
-        return 1;
-    }
+    vector<int> nums = {9, 9, 8, 2};
     
-    vector<int> nums(n);
-    cout << "Enter the elements: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> nums[i];
-    }
-    
+    // Result
     int result = maximumNonAdjacentSum(nums);
     cout << "Maximum Non-Adjacent Sum: " << result << endl;
     
     return 0;
 }
+*/

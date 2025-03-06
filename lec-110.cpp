@@ -1,86 +1,108 @@
-#include <bits/stdc++.h> 
+#include <iostream> 
+#include <vector>
 using namespace std;
 
-//                                                     0/1 Knapsack
+//                                    0/1 Knapsack
 
-//                                                      approach 1
-
+//                                      Recursive
 /*
-int solveMem(vector<int>& weight, vector<int>& value, int index, int capacity, vector<vector<int>>& dp) {
+int solve(vector<int>& weight, vector<int>& value, int index, int capacity) {
+
     // Base case: If there are no items left or the knapsack has no capacity, return 0
-    if (index == 0){
-		if(weight[0] <= capacity){
+    if(index == 0) {
+		if(weight[0] <= capacity) {
 			return value[0];
 		}
-      	else{
+      	else {
         	return 0;
       	}
     }
 
-    // If the result for this state is already calculated, return it
-    if (dp[index][capacity] != -1) {
-        return dp[index][capacity];
+    // Include - Check if the current item can be included without exceeding the knapsack's capacity
+	int include = 0;
+    if(weight[index] <= capacity){
+        include = value[index] + solve(weight, value, index-1, capacity-weight[index]);
     }
+    // Exclude
+	int exclude = solve(weight, value, index-1, capacity);
 
     // Calculate the maximum value by either excluding the current item or including it
-    // Check if the current item can be included without exceeding the knapsack's capacity
-	int include = 0;
-    if (weight[index] <= capacity){
-        include = value[index] + solveMem(weight, value, index-1, capacity-weight[index], dp);
-    }
-	int exclude = solveMem(weight, value, index-1, capacity, dp);
-
-    // Store the result in the DP table and return
-	dp[index][capacity] = max(exclude, include);
-    return dp[index][capacity];
+	int ans = max(exclude, include);
+    return ans;
 }
-
 int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
-	vector<vector<int>> dp(n, vector<int>(maxWeight + 1, -1));
-    return solveMem(weight, value, n-1, maxWeight, dp);
+
+    return solve(weight, value, n-1, maxWeight);
 }
-
 int main() {
-    int n, maxWeight;
-    
-    // Take input for number of items and maximum weight
-    cout << "Enter the number of items: ";
-    cin >> n;
-    cout << "Enter the maximum weight of the knapsack: ";
-    cin >> maxWeight;
 
-    vector<int> weights(n);
-    vector<int> values(n);
+    vector<int> weight = {1, 2, 3, 5};
+    vector<int> value = {20, 50, 60, 100};
+    int maxWeight = 5;
+    int n = weight.size();
 
-    // Take input for weights
-    cout << "Enter the weights of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> weights[i];
-    }
-
-    // Take input for values
-    cout << "Enter the values of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> values[i];
-    }
-
-    int result = knapsack(weights, values, n, maxWeight);
-    cout << "Maximum value in Knapsack = " << result << endl;
+    cout << "Maximum value that can be obtained: " << knapsack(weight, value, n, maxWeight) << endl;
 
     return 0;
 }
 */
-
-//                                                      approach 2
-
+//                                      Top-Down
 /*
-int solveTab(vector<int>& weight, vector<int>& value, int n, int capacity){
+int solve(vector<int>& weight, vector<int>& value, int index, int capacity, vector<vector<int>>& dp) {
 
-	//step1:
+    // Base case: If there are no items left or the knapsack has no capacity, return 0
+    if(index == 0) {
+		if(weight[0] <= capacity) {
+			return value[0];
+		}
+      	else {
+        	return 0;
+      	}
+    }
+
+    if(dp[index][capacity] != -1) {
+        return dp[index][capacity];
+    }
+
+    // Include - Check if the current item can be included without exceeding the knapsack's capacity
+	int include = 0;
+    if(weight[index] <= capacity){
+        include = value[index] + solve(weight, value, index-1, capacity-weight[index], dp);
+    }
+    // Exclude
+	int exclude = solve(weight, value, index-1, capacity, dp);
+
+    // Calculate the maximum value by either excluding the current item or including it
+	dp[index][capacity] = max(exclude, include);
+    return dp[index][capacity];
+}
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
+
+	vector<vector<int>> dp(n, vector<int>(maxWeight + 1, -1));
+    return solve(weight, value, n-1, maxWeight, dp);
+}
+int main() {
+
+    vector<int> weight = {1, 2, 3, 5};
+    vector<int> value = {20, 50, 60, 100};
+    int maxWeight = 5;
+    int n = weight.size();
+
+    cout << "Maximum value that can be obtained: " << knapsack(weight, value, n, maxWeight) << endl;
+
+    return 0;
+}
+*/
+//                                      Bottom-Up
+/*
+int solve(vector<int>& weight, vector<int>& value, int n, int capacity) {
+
+	// Step1:
 	vector<vector<int>> dp(n, vector<int>(capacity+1, 0));	
-    //step2: analyze base case
-    for (int w = weight[0]; w<=capacity; w++){
-		if(weight[0] <= capacity){
+
+    // Step2: Analyze Base Case
+    for (int w = 0; w <= capacity; w++) {
+		if(weight[0] <= w) {
 			dp[0][w] = value[0];
 		}
 		else{
@@ -88,68 +110,47 @@ int solveTab(vector<int>& weight, vector<int>& value, int n, int capacity){
 		}
     }
 
-    for (int index=1; index<n; index++){
-        for (int w=0; w<=capacity; w++){
+    for(int index = 1; index < n; index++) {
+        for (int w = 0; w <= capacity; w++) {
+            // Include
             int include = 0;
             if (weight[index] <= w) {
                 include = value[index] + dp[index-1][w-weight[index]];
             }
-
+            // Exclude
 			int exclude = dp[index-1][w];
             dp[index][w] = max(exclude, include);
         }
     }
     return dp[n-1][capacity];
 }
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
 
-int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
-{
-    return solveTab(weight, value, n, maxWeight);
+    return solve(weight, value, n, maxWeight);
 }
-
 int main() {
-    int n, maxWeight;
-    
-    // Take input for number of items and maximum weight
-    cout << "Enter the number of items: ";
-    cin >> n;
-    cout << "Enter the maximum weight of the knapsack: ";
-    cin >> maxWeight;
 
-    vector<int> weights(n);
-    vector<int> values(n);
+    vector<int> weight = {1, 2, 3, 5};
+    vector<int> value = {20, 50, 60, 100};
+    int maxWeight = 5;
+    int n = weight.size();
 
-    // Take input for weights
-    cout << "Enter the weights of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> weights[i];
-    }
-
-    // Take input for values
-    cout << "Enter the values of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> values[i];
-    }
-
-    int result = knapsack(weights, values, n, maxWeight);
-    cout << "Maximum value in Knapsack = " << result << endl;
+    cout << "Maximum value that can be obtained: " << knapsack(weight, value, n, maxWeight) << endl;
 
     return 0;
 }
 */
-
-//                                                      approach 3
-
+//                                    Space-Optimised
 /*
-int solveTabSO(vector<int>& weight, vector<int>& value, int n, int capacity){
+int solve(vector<int>& weight, vector<int>& value, int n, int capacity) {
 
-	//step1:
+	// Step1:
 	vector<int> prev(capacity+1, 0);
-	vector<int> curr(capacity+1, 0);
+	vector<int> curr(capacity+1, 0);	
 
-    //step2: analyze base case
-    for (int w = weight[0]; w<=capacity; w++){
-		if(weight[0] <= capacity){
+    // Step2: Analyze Base Case
+    for(int w = 0; w <= capacity; w++) {
+		if(weight[0] <= w) {
 			prev[w] = value[0];
 		}
 		else{
@@ -157,67 +158,47 @@ int solveTabSO(vector<int>& weight, vector<int>& value, int n, int capacity){
 		}
     }
 
-    for (int index=1; index<n; index++){
-        for (int w=0; w<=capacity; w++){
+    for(int index = 1; index < n; index++) {
+        for (int w = 0; w <= capacity; w++) {
+            // Include
             int include = 0;
             if (weight[index] <= w) {
                 include = value[index] + prev[w-weight[index]];
             }
-
+            // Exclude
 			int exclude = prev[w];
             curr[w] = max(exclude, include);
         }
-		prev = curr;
+        prev = curr;
     }
     return prev[capacity];
 }
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
 
-int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
-{
-    return solveTabSO(weight, value, n, maxWeight);
+    return solve(weight, value, n, maxWeight);
 }
-
 int main() {
-    int n, maxWeight;
-    
-    // Take input for number of items and maximum weight
-    cout << "Enter the number of items: ";
-    cin >> n;
-    cout << "Enter the maximum weight of the knapsack: ";
-    cin >> maxWeight;
 
-    vector<int> weights(n);
-    vector<int> values(n);
+    vector<int> weight = {1, 2, 3, 5};
+    vector<int> value = {20, 50, 60, 100};
+    int maxWeight = 5;
+    int n = weight.size();
 
-    // Take input for weights
-    cout << "Enter the weights of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> weights[i];
-    }
-
-    // Take input for values
-    cout << "Enter the values of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> values[i];
-    }
-
-    int result = knapsack(weights, values, n, maxWeight);
-    cout << "Maximum value in Knapsack = " << result << endl;
+    cout << "Maximum value that can be obtained: " << knapsack(weight, value, n, maxWeight) << endl;
 
     return 0;
 }
 */
+//                            More Optimised (using one array)
+/*
+int solve(vector<int>& weight, vector<int>& value, int n, int capacity) {
 
-//                                                      approach 4(using one array)
+	// Step1:
+	vector<int> curr(capacity+1, 0);	
 
-int solveTabSO(vector<int>& weight, vector<int>& value, int n, int capacity){
-
-	//step1:
-	vector<int> curr(capacity+1, 0);
-
-    //step2: analyze base case
-    for (int w = weight[0]; w<=capacity; w++){
-		if(weight[0] <= capacity){
+    // Step2: Analyze Base Case
+    for(int w = 0; w <= capacity; w++) {
+		if(weight[0] <= w) {
 			curr[w] = value[0];
 		}
 		else{
@@ -225,51 +206,33 @@ int solveTabSO(vector<int>& weight, vector<int>& value, int n, int capacity){
 		}
     }
 
-    for (int index=1; index<n; index++){
-        for (int w=capacity; w>=0; w--){
+    for(int index = 1; index < n; index++) {
+        for (int w = capacity; w >= 0; w--) {
+            // Include
             int include = 0;
             if (weight[index] <= w) {
                 include = value[index] + curr[w-weight[index]];
             }
-
+            // Exclude
 			int exclude = curr[w];
             curr[w] = max(exclude, include);
         }
     }
     return curr[capacity];
 }
+int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) {
 
-int knapsack(vector<int> weight, vector<int> value, int n, int maxWeight) 
-{
-    return solveTabSO(weight, value, n, maxWeight);
+    return solve(weight, value, n, maxWeight);
 }
-
 int main() {
-    int n, maxWeight;
-    
-    // Take input for number of items and maximum weight
-    cout << "Enter the number of items: ";
-    cin >> n;
-    cout << "Enter the maximum weight of the knapsack: ";
-    cin >> maxWeight;
 
-    vector<int> weights(n);
-    vector<int> values(n);
+    vector<int> weight = {1, 2, 3, 5};
+    vector<int> value = {20, 50, 60, 100};
+    int maxWeight = 5;
+    int n = weight.size();
 
-    // Take input for weights
-    cout << "Enter the weights of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> weights[i];
-    }
-
-    // Take input for values
-    cout << "Enter the values of the items: ";
-    for (int i = 0; i < n; ++i) {
-        cin >> values[i];
-    }
-
-    int result = knapsack(weights, values, n, maxWeight);
-    cout << "Maximum value in Knapsack = " << result << endl;
+    cout << "Maximum value that can be obtained: " << knapsack(weight, value, n, maxWeight) << endl;
 
     return 0;
 }
+*/

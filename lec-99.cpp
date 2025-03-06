@@ -1,92 +1,91 @@
 #include <iostream>
-#include <unordered_map>
-#include <list>
 #include <vector>
+#include <unordered_map>
+#include <set>
+#include <list>
+#include <algorithm>
 using namespace std;
 
-//                                                     Articulation point
-
-int min(int a, int b){
-    if(a<b){
-        return a;
-    }
-    return b;
-}
-void dfs(int node, int parent, vector<int> &disc, vector<int> &low, unordered_map< int, bool > &vis, unordered_map<int, list <int> > &adj, vector<int> &ap, int &timer) {
+//                                   Articulation point
+/*
+void dfs(int node, int parent, vector<int>& disc, vector<int>& low, unordered_map<int, bool>& vis, vector<int> adj[], set<int> &ap, int &timer) {
         
     vis[node] = true;
     disc[node] = low[node] = timer++;
     int child = 0;
-    for (auto nbr: adj[node]) {
-        if (nbr == parent){
+    for(auto nbr: adj[node]) {
+        if(nbr == parent) {
             continue;
         }
-        if (!vis[nbr]){
+        if(!vis[nbr]) {
             dfs(nbr, node, disc, low, vis, adj, ap, timer);
             low[node] = min(low[node], low[nbr]);
             
-            //check AP or not
-            if (low[nbr] >= disc[node] && parent != -1){
-                ap[node] = 1;
+            // Check AP or not
+            if(low[nbr] >= disc[node] && parent != -1) {
+                ap.insert(node);
             }
             child++;
         }
-        else{
+        else {
             low[node] = min(low[node], disc[nbr]);
         }
     }
-    if(child > 1 && parent == -1){
-        ap[node] = true;
+    if(child > 1 && parent == -1) {
+        ap.insert(node);
     }
 }
-
-int main() {
-
-    int n = 5;
-    int e = 5;
-    vector<pair<int,int>> edges;
-    edges.push_back(make_pair(0,3));
-    edges.push_back(make_pair(3,4));
-    edges.push_back(make_pair(0,4));
-    edges.push_back(make_pair(0,1));
-    edges.push_back(make_pair(1,2));
-
-    unordered_map<int, list <int> > adj;
-    for(int i = 0; i<edges.size(); i++)
-        {
-          int u = edges[i].first;
-          int v = edges[i].second;
-
-          adj[u].push_back(v);
-          adj[v].push_back(u);
-        }
+vector<int> articulationPoints(int V, vector<int> adj[]) {
+    
+    vector<int> disc(V, -1);
+    vector<int> low(V, -1);
+    unordered_map <int, bool> vis;
+    set<int> ap;
 
     int timer = 0;
-    vector<int> disc(n);
-    vector<int> low(n);
-    unordered_map< int, bool > vis;
-    vector<int> ap(n,0);
-
-    for(int i = 0; i<n; i++){
-        disc[i] = -1;
-        low[i] = -1;
-    }
-
-    //Call DFS
-    for(int i=0; i<n; i++){
-        if(!vis[i]){
+    for(int i=0; i<V; i++) {
+        if(!vis[i]) {
             dfs(i, -1, disc, low, vis, adj, ap, timer);
         }
     }
 
-    //point ap
-    cout << "articulation points are as follows" << endl;
-    for (int i=0; i<n; i++){
-        if(ap[i] != 0){
-            cout << i << " ";
-        }
+    // Copy all elements of set in vector
+    vector<int> v(ap.begin(), ap.end());
+    sort(v.begin(), v.end());
+    if(v.empty()) {
+        v.push_back(-1);
+        return v;
+    }
+    return v;
+}
+int main() {
+
+    int V;
+    cout << "Enter the number of nodes : " << endl;
+    cin >> V;
+
+    int E;
+    cout << "Enter the number of edges : " << endl;
+    cin >> E;
+
+    // Creation of adjacency list
+    vector<int> adj[V];
+    cout << "Enter the edges : " << endl;
+    for (int i=0; i<E; i++) {
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // Result
+    vector<int> ap = articulationPoints(V, adj);
+    cout << "Articulation Points: ";
+    for (int point : ap) {
+        cout << point << " ";
     }
     cout << endl;
 
     return 0;
 }
+*/
