@@ -8,154 +8,64 @@
 #include <algorithm>
 using namespace std;
 
-//                                      Fibonacci Number
 
-//                                         Recursive
-/*
-int fib(int n) {
+int findParent(vector<int>& parent, int node) {
 
-    if(n <= 1) {
-        return n;
+    if(parent[node] == node) {
+        return node;
     }
-    int ans = fib(n-1) + fib(n-2);
-    return ans;
+    return parent[node] = findParent(parent, parent[node]);
 }
-int main() {
+void unionSet(int u, int v, vector<int>& parent, vector<int>& size) {
 
-    int n;
-    cout << "Enter a number: ";
-    cin >> n;
-    
-    cout << "Fibonacci(" << n << ") = " << fib(n) << endl;
-    return 0;
-}
-*/
-//                                         Top-Down
-/*
-int fibo(int n, vector<int>& dp) {
+    u = findParent(parent, u);
+    v = findParent(parent, v);
 
-    // Base Case
-    if(n <= 1) {
-        return n;
+    if(size[u] < size[v]) {
+        parent[u] = v;
+        size[v] += size[u];
     }
-
-    if(dp[n] != -1) {
-        return dp[n];
+    else if(size[u] > size[v]) {
+        parent[v] = u;
+        size[u] += size[v];
     }
-
-    // Step 2
-    dp[n] = fibo(n-1, dp) + fibo(n-2, dp);
-    return dp[n];
-}
-int fib(int n) {
-
-    vector<int> dp(n+1);
-    for(int i=0; i<=n; i++) {
-        dp[i] = -1;
+    else {
+        parent[v] = u;
+        size[u] += size[v];
     }
-    return fibo(n, dp);
 }
-int main() {
+int countCompleteComponents(int n, vector<vector<int>>& edges) {
 
-    int n;
-    cout << "Enter a number: ";
-    cin >> n;
-    
-    cout << "Fibonacci(" << n << ") = " << fib(n) << endl;
-    return 0;
-}
-*/
-//                                          Bottom-Up
-/*
-int fib(int n) {
-
-    if(n==0) {
-        return 0;
-    }
-    // Step 1
-    vector<int> dp(n+1);
-
-    // Step 2
-    dp[1] = 1;
-    dp[0] = 0;
-
-    // Step 3
-    for(int i=2; i<=n; i++) {
-            dp[i] = dp[i-1] + dp[i-2];
-    }
-    return dp[n];
-}
-int main() {
-
-    int n;
-    cout << "Enter a number: ";
-    cin >> n;
-    
-    cout << "Fibonacci(" << n << ") = " << fib(n) << endl;
-    return 0;
-}
-*/
-//                                     Space-Optimised
-/*
-int fib(int n) {
-
-    if(n==0) {
-        return n;
+    vector<int> parent(n);
+    vector<int> size(n);
+    for(int i=0; i<n; i++) {
+        parent[i] = i;
+        size[i] = 1;
     }
 
-    // Step 2
-    int prev1 = 1;
-    int prev2 = 0;
-    for(int i=2; i<=n; i++) {
-            int curr = prev1 + prev2;
-            prev2 = prev1;
-            prev1 = curr;
-    }
-    return prev1;
-}
-int main() {
-
-    int n;
-    cout << "Enter a number: ";
-    cin >> n;
-    
-    cout << "Fibonacci(" << n << ") = " << fib(n) << endl;
-    return 0;
-}
-*/
-
-
-
-
-
-
-int solve(vector<int>& arr, int diff, int index, int lastval) {
-
-    if(index >= arr.size()) {
-        return 0;
+    unordered_map <int, int> mp;
+    for(int i=0; i < edges.size(); i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        unionSet(u, v, parent, size);
     }
 
-    // Skip
-    int skip = 0;
-    if(arr[index] == lastval) {
-        skip = solve(arr, diff, index+1, lastval); 
+    // Count the edges for each root
+    for(int i=0; i < edges.size(); i++) {
+        int u = edges[i][0];
+        int root = findParent(parent, u);
+        mp[root]++; 
     }
-    // Include
-    int include = 0;
-    if(lastval + diff == arr[index]) {
-        include = 1+solve(arr, diff, index+1, arr[index]);
+
+    int result = 0;
+    for(int i=0; i<n; i++) {
+        if(findParent(parent, i) == i) {
+            int v = size[i];
+            int e = mp[i];
+            if((v * (v-1)) / 2 == e) {
+                result++;
+            }
+        }
     }
-    return max(skip, include);
-}
-int longestSubsequence(vector<int>& arr, int difference) {
-
-    return solve(arr, difference, 0, arr[0]);
-}
-int main() {
-
-    vector<int> arr = {1, 5, 7, 8, 5, 3, 4, 2, 1};
-    vector<int> arr2 = {1,2,3,4,5};
-    int difference = 1;
-    cout << longestSubsequence(arr2, difference) << endl;  // Output: 4
-    return 0;
+    return result;
 }
