@@ -77,7 +77,67 @@ int main() {
 }
 */
 
-//                                 Maximal Rectangle
+//                                         Maximal Rectangle
+
+//                                             Approach 1
+/*
+int largestRectangleArea(vector<int>& heights) {
+
+    int n = heights.size();
+
+    int area = INT_MIN;
+    for(int i=0; i<n; i++){ 
+        int left = i;
+        int right = i;
+        while(left > 0 && heights[left-1] >= heights[i]){
+            left--;
+        }
+        while(right < n-1 && heights[right+1] >= heights[i]){
+            right++;
+        }
+        int b = right - left + 1;
+        int newArea = heights[i] * b;
+        area = max(area, newArea);
+    }
+    return area;
+}
+int maximalRectangle(vector<vector<char>>& matrix) {
+
+    int n = matrix.size();
+    int m = matrix[0].size();
+
+    vector<int> heights(m, 0);
+
+    int area = 0;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<m; j++){
+            if(matrix[i][j] == '1'){
+                heights[j]++;
+            }
+            else {
+                heights[j] = 0;
+            }
+        }
+        area = max(area, largestRectangleArea(heights));
+    }
+    return area;
+}
+int main() {
+    
+    vector<vector<char>> matrix = {
+        {'1', '0', '1', '0', '0'},
+        {'1', '0', '1', '1', '1'},
+        {'1', '1', '1', '1', '1'},
+        {'1', '0', '0', '1', '0'}
+    };
+
+    int result = maximalRectangle(matrix);
+    cout << "Maximal rectangle area: " << result << endl;
+    
+    return 0;
+}
+*/
+//                                             Approach 2
 /*
 vector<int> nextSmallerElement(int *arr, int n) {
 

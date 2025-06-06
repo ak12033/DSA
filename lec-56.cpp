@@ -340,7 +340,39 @@ int main(){
 }
 */
 
-//                          Largest Rectangle in Histogram
+//                                   Largest Rectangle in Histogram
+
+//                                             Approach 1
+/*
+int largestRectangleArea(vector<int>& heights) {
+
+    int n = heights.size();
+
+    int area = INT_MIN;
+    for (int i=0; i<n; i++) {
+        int left = i;
+        int right = i;
+        while(left > 0 && heights[left - 1] >= heights[i]) {
+            left--;
+        }
+        while(right < n-1 && heights[right + 1] >= heights[i]) {
+            right++;
+        }
+        int b = right - left + 1;
+        int newArea = heights[i] * b;
+        area = max(area, newArea);
+    }
+    return area;
+}
+int main() {
+
+    vector<int> heights = {2, 1, 5, 6, 2, 3};
+    cout << "Largest Rectangle Area: " << largestRectangleArea(heights) << endl;
+
+    return 0;
+}
+*/
+//                                             Approach 2
 /*
 vector<int> nextSmallerElement(vector<int> arr, int n) {
 

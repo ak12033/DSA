@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <vector>
+#include <stack>
 #include <map>
 #include <unordered_map>
 #include <set>
@@ -1404,7 +1405,7 @@ int main() {
 /*
 bool possible(vector<int>& candies, long long k, int mid) {
 
-    for(int candy : candies) {
+    for(int candy : candies) 
         k -= candy / mid;
         if(k <= 0) {
             return true;
@@ -3164,6 +3165,8 @@ int main() {
 */
 
 //                      Find the Index of the First Occurrence in a String
+
+//                                         Approach 1
 /*
 int strStr(string haystack, string needle) {
 
@@ -3174,6 +3177,34 @@ int strStr(string haystack, string needle) {
     for(int i=0; i <= haystack.length() - needle.length(); i++) {
         if(haystack.substr(i, needle.length()) == needle) {
             return i;
+        }
+    }
+    return -1;
+}
+int main() {
+
+    string haystack = "hello", needle = "ll";
+    cout << "First Occurrence is at : " << strStr(haystack, needle) << endl;
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+int strStr(string haystack, string needle) {
+
+    if(needle.length() > haystack.length()) {
+        return -1;
+    }
+
+    for(int i=0; i <= haystack.length() - needle.length(); i++) {
+        int j = 0;
+        while(j < needle.length() && haystack[i + j] == needle[j]) {
+            j++;
+        }
+        // Found match at position i
+        if(j == needle.length()) {
+            return i; 
         }
     }
     return -1;
@@ -6686,6 +6717,2376 @@ int main() {
     }
     cout << endl;
 
+    return 0;
+}
+*/
+
+//                                          Water Bottles
+
+//                                           Approach 1
+/*
+int numWaterBottles(int numBottles, int numExchange) {
+
+    int consumed = 0;
+    while(numBottles >= numExchange) {
+        consumed += numExchange;
+        numBottles -= numExchange;
+        numBottles += 1;
+    }
+    return consumed + numBottles;
+}
+int main() {
+
+    int numBottles = 15;
+    int numExchange = 4;
+
+    int totalConsumed = numWaterBottles(numBottles, numExchange);
+    cout << "Total bottles you can drink: " << totalConsumed << endl;
+
+    return 0;
+}
+*/
+//                                           Approach 2
+/*
+int numWaterBottles(int numBottles, int numExchange) {
+
+    int tot = numBottles;
+    while (numBottles >= numExchange){
+        tot += numBottles / numExchange;
+        numBottles = (numBottles / numExchange) + (numBottles % numExchange);
+    }
+    return tot;
+}
+int main() {
+
+    int numBottles = 15;
+    int numExchange = 4;
+
+    int totalConsumed = numWaterBottles(numBottles, numExchange);
+    cout << "Total bottles you can drink: " << totalConsumed << endl;
+
+    return 0;
+}
+*/
+//                                           Approach 3
+/*
+int numWaterBottles(int numBottles, int numExchange) {
+
+    return numBottles + (numBottles - 1) / (numExchange - 1);
+}
+int main() {
+
+    int numBottles = 15;
+    int numExchange = 4;
+
+    int totalConsumed = numWaterBottles(numBottles, numExchange);
+    cout << "Total bottles you can drink: " << totalConsumed << endl;
+
+    return 0;
+}
+*/
+
+//                                      Crawler Log Folder
+
+//                                         Approach 1
+/*
+int minOperations(vector<string>& logs) {
+
+    int depth = 0;
+    for(string &s : logs) {
+        if(s == "../") {
+            depth = max(0, depth-1);
+        } 
+        else if(s == "./") {
+            continue;
+        } 
+        else {
+            depth++;
+        }
+    }
+    return depth;
+}
+int main() {
+
+    vector<string> logs = {"d1/", "d2/", "../", "d21/", "./"};
+
+    int result = minOperations(logs);
+    cout << "Minimum operations to reach main folder: " << result << endl;
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+int minOperations(vector<string>& logs) {
+
+    stack <string> st;
+    for(string& currentOperation : logs) {
+        if(currentOperation == "../") {
+            if(!st.empty()) {
+                st.pop();
+            }
+        } 
+        else if (currentOperation != "./") {
+            st.push(currentOperation);
+        }
+    }
+    return st.size();
+}
+int main() {
+
+    vector<string> logs = {"d1/", "d2/", "../", "d21/", "./"};
+
+    int result = minOperations(logs);
+    cout << "Minimum operations to reach main folder: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                         Total Characters in String After Transformations I
+/*
+int M = 1e9 + 7;
+int lengthAfterTransformations(string s, int t) {
+
+    vector<int> mp(26, 0);
+    for(char &ch : s) {
+        mp[ch - 'a']++;
+    }
+
+    for(int count = 1; count <= t; count++) {
+        vector<int> temp(26, 0);
+        for(int i=0; i < 26; i++) {            
+            char ch = i + 'a';
+            int freq = mp[i];
+            if(ch != 'z') {
+                temp[(ch + 1) - 'a'] = (temp[(ch + 1) - 'a'] + freq) % M;
+            }
+            else {
+                temp['a' - 'a'] = (temp['a' - 'a'] + freq) % M;
+                temp['b' - 'a'] = (temp['b' - 'a'] + freq) % M;
+            }
+        }
+        mp = move(temp);
+    }
+
+    int result = 0;
+    for(int i=0; i < 26; i++) {
+        result = (result + mp[i]) % M;
+    }
+    return result;
+}
+int main() {
+
+    string s = "abcyy";
+    int t = 2;
+
+    cout << "Result for (\"abcyy\", 2): " << lengthAfterTransformations(s, t) << endl;
+
+    return 0;
+}
+*/
+
+//                   Total Characters in String After Transformations II
+/*
+typedef vector<vector<int>> Matrix;
+int MOD = 1e9 + 7;
+Matrix matrixMultiplication(const Matrix& A, const Matrix& B) {
+
+    Matrix result(26, vector<int>(26, 0));
+    for(int i=0; i < 26; ++i) {
+        for(int j=0; j < 26; ++j) {
+            for(int k=0; k < 26; ++k) {
+                result[i][j] = (result[i][j] + (1LL * A[i][k] * B[k][j]) % MOD) % MOD;
+            }
+        }
+    }
+    return result;
+}
+Matrix matrixExponentiation(const Matrix& base, int exponent) {
+
+    if(exponent == 0) {
+        Matrix identity(26, vector<int>(26, 0));
+        for(int i=0; i < 26; ++i) {
+            identity[i][i] = 1;
+        }
+        return identity;
+    }
+
+    Matrix half = matrixExponentiation(base, exponent / 2);
+    Matrix result = matrixMultiplication(half, half);
+
+    if(exponent % 2 == 1) {
+        result = matrixMultiplication(result, base);
+    }
+    return result;
+}
+int lengthAfterTransformations(string s, int t, vector<int>& nums) {
+
+    vector<int> freq(26, 0);
+    for(char &ch : s) {
+        freq[ch - 'a']++;
+    }
+
+    Matrix T(26, vector<int>(26, 0));
+    for(int i=0; i < 26; ++i) {
+        for(int add = 1; add <= nums[i]; ++add)
+            T[(i + add) % 26][i]++;
+    }
+
+    Matrix result = matrixExponentiation(T, t);
+
+    vector<int> updated_freq(26, 0);
+    for(int i=0; i < 26; ++i) {
+        for(int j=0; j < 26; ++j) {
+            updated_freq[i] = (updated_freq[i] + (1LL * result[i][j] * freq[j]) % MOD) % MOD;
+        }
+    }
+
+    int resultLength = 0;
+    for(int i=0; i < 26; ++i) {
+        resultLength = (resultLength + updated_freq[i]) % MOD;
+    }
+    return resultLength;
+}
+int main() {
+    
+    string s = "abcyy";
+    int t = 2;
+    vector<int> nums = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2};
+
+    int resultLength = lengthAfterTransformations(s, t, nums);
+    cout << "Length after " << t << " transformations: " << resultLength << endl;
+
+    return 0;
+}
+*/
+
+//                          Longest Unequal Adjacent Groups Subsequence I
+/*
+vector<string> getLongestSubsequence(vector<string>& words, vector<int>& groups) {
+
+    int n = words.size();
+
+    vector<string> result;
+    for(int i=0; i<n; i++) {
+        if(i == 0 || groups[i] != groups[i-1]) { 
+            result.push_back(words[i]);
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<string> words = {"e", "a", "b"};
+    vector<int> groups = {0, 0, 1};
+
+    vector<string> result = getLongestSubsequence(words, groups);
+
+    cout << "Longest subsequence by group changes:\n";
+    for(const string& word : result) {
+        cout << word << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                              Longest Unequal Adjacent Groups Subsequence II
+/*
+bool check(string& s1, string& s2) {
+
+    if(s1.size() != s2.size()) {
+        return false;
+    }
+
+    int diff = 0;
+    for(int i=0; i < s1.size(); i++) {
+        diff += s1[i] != s2[i];
+        if(diff > 1) {
+            return false;
+        }
+    }
+    return diff == 1;
+}
+vector<string> getWordsInLongestSubsequence(vector<string>& words, vector<int>& groups) {
+
+    int n = groups.size();
+
+    vector<int> dp(n, 1);
+    vector<int> prev(n, -1);
+
+    int maxIndex = 0;
+    for(int i=1; i<n; i++) {
+        for(int j=0; j<i; j++) {
+            if(check(words[i], words[j]) && dp[j] + 1 > dp[i] && groups[i] != groups[j]) {
+                dp[i] = dp[j] + 1;
+                prev[i] = j;
+            }
+        }
+        if(dp[i] > dp[maxIndex]) {
+            maxIndex = i;
+        }
+    }
+
+    vector<string> ans;
+    for(int i = maxIndex; i >= 0; i = prev[i]) {
+        ans.push_back(words[i]);
+    }
+    reverse(ans.begin(), ans.end());
+    return ans;
+}
+int main() {
+
+    vector<string> words = {"a", "b", "c", "d"};
+    vector<int> groups = {1, 2, 3, 4};
+
+    vector<string> result = getWordsInLongestSubsequence(words, groups);
+    cout << "Longest valid subsequence:" << endl;
+    for(const string& word : result) {
+        cout << word << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                  Single Element in a Sorted Array
+/*
+int singleNonDuplicate(vector<int>& nums) {
+
+    int n = nums.size();
+
+    int l = 0;
+    int h = n-1;
+
+    while(l < h) {
+        int mid = l + (h-l) / 2;
+
+        bool isEven = mid % 2 == 0;
+        if(nums[mid] == nums[mid + 1]) {
+            if(isEven) {
+                l = mid + 2;
+            }
+            else {
+                h = mid - 1;
+            }
+        }
+        else {
+            if(isEven) {
+                h = mid;
+            }
+            else {
+                l = mid + 1;
+            }
+        }
+    }
+    return nums[h];
+}
+int main() {
+
+    vector<int> nums = {1, 1, 2, 3, 3, 4, 4, 8, 8};
+
+    int result = singleNonDuplicate(nums);
+    cout << "The single non-duplicate element is: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                          Sort Colors
+/*
+void sortColors(vector<int>& nums) {
+
+    int n = nums.size();
+
+    int i = 0;
+    int j = 0;
+    int k = n - 1;
+    while(j <= k) {
+        if(nums[j] == 1) {
+            j++;
+        }
+        else if(nums[j] == 2) {
+            swap(nums[j], nums[k--]);
+        }
+        else {
+            swap(nums[j++], nums[i++]);
+        }
+    }
+}
+int main() {
+
+    vector<int> nums = {2, 0, 2, 1, 1, 0};
+
+    cout << "Before sorting: ";
+    for(int num : nums) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    sortColors(nums);
+
+    cout << "After sorting:  ";
+    for(int num : nums) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                  Painting a Grid With Three Different
+
+//                                              Recursive
+/*
+vector<string> columnStates;
+const int MOD = 1e9 + 7;
+void generateColumnStates(string currentColumn, int rowsRemaining, char prevColor) {
+
+    if(rowsRemaining == 0) {
+        columnStates.push_back(currentColumn);
+        return;
+    }
+
+    for(char color : {'R', 'G', 'B'}) {
+        if(color == prevColor) {
+            continue;
+        }
+        generateColumnStates(currentColumn + color, rowsRemaining - 1, color);
+    }
+}
+int solve(int remainingCols, int prevColumnIdx, int m) {
+
+    if(remainingCols == 0) {
+        return 1;
+    }
+
+    int totalWays = 0;
+    string prevColumn = columnStates[prevColumnIdx];
+    for(int nextColumnIdx = 0; nextColumnIdx < columnStates.size(); nextColumnIdx++) {
+        string nextColumn = columnStates[nextColumnIdx];
+        bool valid = true;
+        // Check horizontal adjacency (no adjacent same color in same row)
+        for(int r=0; r<m; r++) {
+            if(prevColumn[r] == nextColumn[r]) {
+                valid = false;
+                break;
+            }
+        }
+        if(valid) {
+            totalWays = (totalWays + solve(remainingCols - 1, nextColumnIdx, m)) % MOD;
+        }
+    }
+    return totalWays;
+}
+int colorTheGrid(int m, int n) {
+
+    generateColumnStates("", m, '#');
+
+    int numColumnPatterns = columnStates.size();
+
+    int result = 0;
+    for(int i=0; i < numColumnPatterns; i++) {
+        result = (result + solve(n-1, i, m)) % MOD;
+    }
+    return result;
+}
+int main() {
+
+    int m = 5, n = 5; 
+    cout << "Number of ways to color a " << m << "x" << n << " grid: " << colorTheGrid(m, n) << endl;
+
+    return 0;
+}
+*/
+//                                              Top-Down
+/*
+vector<string> columnStates;
+const int MOD = 1e9 + 7;
+void generateColumnStates(string currentColumn, int rowsRemaining, char prevColor) {
+
+    if(rowsRemaining == 0) {
+        columnStates.push_back(currentColumn);
+        return;
+    }
+
+    for(char color : {'R', 'G', 'B'}) {
+        if(color == prevColor) {
+            continue;
+        }
+        generateColumnStates(currentColumn + color, rowsRemaining - 1, color);
+    }
+}
+int solve(int remainingCols, int prevColumnIdx, int m, vector<vector<int>>& dp) {
+
+    if(remainingCols == 0) {
+        return 1;
+    }
+
+    if(dp[remainingCols][prevColumnIdx] != -1) {
+        return dp[remainingCols][prevColumnIdx];
+    }
+
+    int totalWays = 0;
+    string prevColumn = columnStates[prevColumnIdx];
+    for(int nextColumnIdx = 0; nextColumnIdx < columnStates.size(); nextColumnIdx++) {
+        string nextColumn = columnStates[nextColumnIdx];
+        bool valid = true;
+        // Check horizontal adjacency (no adjacent same color in same row)
+        for(int r=0; r<m; r++) {
+            if(prevColumn[r] == nextColumn[r]) {
+                valid = false;
+                break;
+            }
+        }
+        if(valid) {
+            totalWays = (totalWays + solve(remainingCols - 1, nextColumnIdx, m, dp)) % MOD;
+        }
+    }
+    return dp[remainingCols][prevColumnIdx] = totalWays;
+}
+int colorTheGrid(int m, int n) {
+
+    generateColumnStates("", m, '#');
+    int numColumnPatterns = columnStates.size();
+
+    vector<vector<int>> dp(n, vector<int>(numColumnPatterns, -1));
+
+    int result = 0;
+    for(int i=0; i < numColumnPatterns; i++) {
+        result = (result + solve(n-1, i, m, dp)) % MOD;
+    }
+    return result;
+}
+int main() {
+
+    int m = 5, n = 5; 
+    cout << "Number of ways to color a " << m << "x" << n << " grid: " << colorTheGrid(m, n) << endl;
+
+    return 0;
+}
+*/
+
+//                                 Number of Ways to Paint N × 3 Grid
+
+//                                              Recursive
+/*
+vector<string> rowStates;
+const int MOD = 1e9 + 7;
+void generateRowStates(string currentRow, int columnsRemaining, char prevColor) {
+
+    if(columnsRemaining == 0) {
+        rowStates.push_back(currentRow);
+        return;
+    }
+
+    for(char color : {'R', 'G', 'Y'}) {
+        if(color == prevColor) {
+            continue;
+        }
+        generateRowStates(currentRow + color, columnsRemaining - 1, color);
+    }
+}
+int solve(int remainingRows, int prevRowIdx, int m) {
+
+    if(remainingRows == 0) {
+        return 1;
+    }
+
+    int totalWays = 0;
+    string prevRow = rowStates[prevRowIdx];
+    for(int nextRowIdx = 0; nextRowIdx < rowStates.size(); nextRowIdx++) {
+        string nextRow = rowStates[nextRowIdx];
+        bool valid = true;
+        // Check horizontal adjacency (no adjacent same color in same column)
+        for(int r=0; r<m; r++) {
+            if(prevRow[r] == nextRow[r]) {
+                valid = false;
+                break;
+            }
+        }
+        if(valid) {
+            totalWays = (totalWays + solve(remainingRows - 1, nextRowIdx, m)) % MOD;
+        }
+    }
+    return totalWays;
+}
+int numOfWays(int n) {
+
+    generateRowStates("", 3, '#');
+    int numRowPatterns = rowStates.size();
+
+    int result = 0;
+    for(int i=0; i < numRowPatterns; i++) {
+        result = (result + solve(n-1, i, 3)) % MOD;
+    }
+    return result;
+}
+int main() {
+
+    int n = 10;
+
+    int result = numOfWays(n);
+    cout << "Number of ways to color " << n << "x3 grid: " << result << endl;
+
+    return 0;
+}
+*/
+//                                              Top-Down
+/*
+vector<string> rowStates;
+const int MOD = 1e9 + 7;
+void generateRowStates(string currentRow, int columnsRemaining, char prevColor) {
+
+    if(columnsRemaining == 0) {
+        rowStates.push_back(currentRow);
+        return;
+    }
+
+    for(char color : {'R', 'G', 'Y'}) {
+        if(color == prevColor) {
+            continue;
+        }
+        generateRowStates(currentRow + color, columnsRemaining - 1, color);
+    }
+}
+int solve(int remainingRows, int prevRowIdx, int m, vector<vector<int>>& dp) {
+
+    if(remainingRows == 0) {
+        return 1;
+    }
+
+    if(dp[remainingRows][prevRowIdx] != -1) {
+        return dp[remainingRows][prevRowIdx];
+    }
+
+    int totalWays = 0;
+    string prevRow = rowStates[prevRowIdx];
+    for(int nextRowIdx = 0; nextRowIdx < rowStates.size(); nextRowIdx++) {
+        string nextRow = rowStates[nextRowIdx];
+        bool valid = true;
+        // Check horizontal adjacency (no adjacent same color in same row)
+        for(int r=0; r<m; r++) {
+            if(prevRow[r] == nextRow[r]) {
+                valid = false;
+                break;
+            }
+        }
+        if(valid) {
+            totalWays = (totalWays + solve(remainingRows - 1, nextRowIdx, m, dp)) % MOD;
+        }
+    }
+    return dp[remainingRows][prevRowIdx] = totalWays;
+}
+int numOfWays(int n) {
+
+    generateRowStates("", 3, '#');
+    int numRowPatterns = rowStates.size();
+
+    vector<vector<int>> dp(n, vector<int>(numRowPatterns, -1));
+
+    int result = 0;
+    for(int i=0; i < numRowPatterns; i++) {
+        result = (result + solve(n-1, i, 3, dp)) % MOD;
+    }
+    return result;
+}
+int main() {
+
+    int n = 5000;
+
+    int result = numOfWays(n);
+    cout << "Number of ways to color " << n << "x3 grid: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                           Type of Triangle
+/*
+string triangleType(vector<int>& nums) {
+
+    bool valid = (nums[0] + nums[1] > nums[2]) && (nums[0] + nums[2] > nums[1]) && (nums[1] + nums[2] > nums[0]);
+    if(!valid) {
+        return "none";
+    }
+
+    if(nums[0] == nums[1] && nums[1] == nums[2]) {
+        return "equilateral";
+    }
+    else if (nums[0] != nums[1] && nums[0] != nums[2] && nums[1] != nums[2]) {
+        return "scalene";
+    }
+    return "isosceles";
+}
+int main() {
+
+    vector<int> sides = {3, 4, 5};
+    cout << "Triangle type: " << triangleType(sides) << endl;
+
+    return 0;
+}
+*/
+
+//                                        Range Addition
+/*
+vector<int> getModifiedArray(int length, vector<vector<int>>& updates) {
+
+    vector<int> res(length, 0);
+    for(auto& update : updates) {
+        int start = update[0];
+        int end = update[1];
+        int inc = update[2];
+        res[start] += inc;
+        if(end + 1 < length) {
+            res[end + 1] -= inc;
+        }
+    }
+
+    for(int i=1; i < length; ++i) {
+        res[i] += res[i-1];
+    }
+    return res;
+}
+int main() {
+
+    int length = 5;
+    vector<vector<int>> updates = {
+        {1, 3, 2},
+        {2, 4, 3},
+        {0, 2, -2}
+    };
+
+    vector<int> result = getModifiedArray(length, updates);
+    for(int num : result) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                    Zero Array Transformation I
+/*
+bool isZeroArray(vector<int>& nums, vector<vector<int>>& queries) {
+
+    int n = nums.size();
+
+    // Step 1: Make diff array using query
+    vector<int> diff(n, 0);
+    for(auto &query : queries) {
+        int start = query[0];
+        int end = query[1];
+        int x = 1;
+        diff[start] += x;
+        if(end + 1 < n) {
+            diff[end + 1] -= x;
+        }
+    }
+
+    // Step 2: Find cumulative effect on each index
+    vector<int> result(n, 0);
+    int cumSum = 0;
+    for(int i=0; i<n; i++) {
+        cumSum += diff[i];
+        result[i] = cumSum;
+    }
+
+    for(int i=0; i<n; i++) {
+        // nums[i] won't become 0 ever
+        if(result[i] < nums[i]) { 
+            return false;
+        }
+    }
+    return true;
+}
+int main() {
+
+    vector<int> nums = {4, 3, 2, 1};
+    vector<vector<int>> queries = {{1, 3}, {0, 2}};
+
+    if(isZeroArray(nums, queries)) {
+        cout << "Yes, it can be reduced to zero." << endl;
+    } 
+    else {
+        cout << "No, it cannot be reduced to zero." << endl;
+    }
+    return 0;
+}
+*/
+
+//                                          Set Matrix Zeroes
+
+//                                             Approach 1
+/*
+void setZeroes(vector<vector<int>>& matrix) {
+
+    int m = matrix.size();
+    int n = matrix[0].size();
+
+    vector<vector<int>> temp = matrix;
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(matrix[i][j] == 0) {
+                // Zero out the entire row
+                for(int k=0; k<n; k++) {
+                    temp[i][k] = 0; 
+                }
+                // Zero out the entire column
+                for(int k=0; k<m; k++) {
+                    temp[k][j] = 0; 
+                }
+            }
+        }
+    }
+    matrix = temp;
+}
+int main() {
+
+    vector<vector<int>> matrix = {
+        {0, 1, 2, 0},
+        {3, 4, 5, 2},
+        {1, 3, 1, 5}
+    };
+
+    setZeroes(matrix);
+
+    cout << "Matrix after applying setZeroes:" << endl;
+    for(int i=0; i < matrix.size(); i++) {
+        for(int j=0; j < matrix[0].size(); j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+*/
+//                                             Approach 2
+/*
+void setZeroes(vector<vector<int>>& matrix) {
+
+    int m = matrix.size();   
+    int n = matrix[0].size();
+
+    vector<bool> row(m, false);
+    vector<bool> col(n, false);
+
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(matrix[i][j] == 0) {
+                // Mark it for zero
+                row[i] = true; 
+                col[j] = true;
+            }
+        }
+    }
+
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(row[i] || col[j]) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+}
+int main() {
+
+    vector<vector<int>> matrix = {
+        {0, 1, 2, 0},
+        {3, 4, 5, 2},
+        {1, 3, 1, 5}
+    };
+
+    setZeroes(matrix);
+
+    cout << "Matrix after applying setZeroes:" << endl;
+    for(int i=0; i < matrix.size(); i++) {
+        for(int j=0; j < matrix[0].size(); j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+*/
+//                                             Approach 3
+/*
+void setZeroes(vector<vector<int>>& matrix) {
+
+    int m = matrix.size();
+    int n = matrix[0].size();
+    bool firstRowZero = false;
+    bool firstColZero = false;
+
+    // Check first row and col separately
+    for(int i=0; i<m; i++) {
+        if(matrix[i][0] == 0) {
+            firstColZero = true;
+        }
+    }
+    for(int j=0; j<n; j++) {
+        if(matrix[0][j] == 0) {
+            firstRowZero = true;
+        }
+    }
+
+    for(int i=1; i<m; i++) {
+        for(int j=1; j<n; j++) {
+            if(matrix[i][j] == 0) {
+                matrix[i][0] = 0;
+                matrix[0][j] = 0;
+            }
+        }
+    }
+    for(int i=1; i<m; i++) {
+        for(int j=1; j<n; j++) {
+            if(matrix[i][0] == 0 || matrix[0][j] == 0) {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    if(firstRowZero) {
+        for(int j=0; j<n; j++) {
+            matrix[0][j] = 0;
+        }
+    }
+    if(firstColZero) {
+        for(int i=0; i<m; i++) {
+            matrix[i][0] = 0;
+        }
+    }
+}
+int main() {
+
+    vector<vector<int>> matrix = {
+        {0, 1, 2, 0},
+        {3, 4, 5, 2},
+        {1, 3, 1, 5}
+    };
+
+    setZeroes(matrix);
+
+    cout << "Matrix after applying setZeroes:" << endl;
+    for(int i=0; i < matrix.size(); i++) {
+        for(int j=0; j < matrix[0].size(); j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+*/
+
+//                                     Zero Array Transformation III
+/*
+int maxRemoval(vector<int>& nums, vector<vector<int>>& queries) {
+
+    int n = nums.size();
+
+    // Min-heap of used queries' end indices
+    priority_queue <int, vector<int>, greater<int>> past;
+
+    // Max-heap of available queries' end indices
+    priority_queue <int> maxHeap;
+
+    // Sort queries by start index
+    sort(queries.begin(), queries.end());
+
+    // Pointer to queries
+    int j = 0;       
+
+    // Number of queries actually used  
+    int usedCount = 0; 
+    for(int i=0; i<n; ++i) {
+        // Push all queries starting at index i into maxHeap
+        while(j < queries.size() && queries[j][0] == i) {
+            // Push only the end
+            maxHeap.push(queries[j][1]); 
+            ++j;
+        }
+
+        // Apply effect of already-used queries
+        nums[i] -= past.size();
+
+        // Apply more queries if needed
+        while(nums[i] > 0 && !maxHeap.empty() && maxHeap.top() >= i) {
+            int r = maxHeap.top();
+            maxHeap.pop();
+            past.push(r);
+            usedCount++;
+            nums[i]--;
+        }
+
+        // If we can't reduce nums[i] to 0
+        if(nums[i] > 0) {
+            return -1;
+        }
+
+        // Remove expired queries
+        while(!past.empty() && past.top() == i) {
+            past.pop();
+        }
+    }
+    return queries.size() - usedCount;
+}
+int main() {
+
+    vector<int> nums = {1, 1, 1, 1};
+    vector<vector<int>> queries = {{1, 3}, {0, 2}, {1, 3}, {1, 2}};
+
+    int result = maxRemoval(nums, queries);
+    cout << "Maximum unused queries: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                 Find the Maximum Sum of Node Values
+
+//                                              Approach 1
+/*
+typedef long long ll;
+long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+
+    ll sum = 0;
+    int count = 0;
+    int minNukasan = INT_MAX;
+
+    for(ll num : nums) {
+        if((num ^ k) > num) {
+            count++;
+            sum += (num ^ k);
+        }
+        else {
+            sum += num;
+        }
+        minNukasan = min((ll)minNukasan, abs(num - (num ^ k)));
+    }
+    if(count % 2 == 0) {
+        return sum;
+    }
+    return sum - minNukasan;
+}
+int main() {
+
+    vector<int> nums = {1, 2, 1};
+    int k = 3;
+    vector<vector<int>> edges = {{0, 1}, {0, 2}};
+
+    ll result = maximumValueSum(nums, k, edges);
+    cout << "Maximum Value Sum: " << result << endl;
+
+    return 0;
+}
+*/
+//                                              Approach 2
+/*
+typedef long long ll;
+ll maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+
+    vector<int> fayda;
+
+    ll normalSum = 0;
+    for(int i=0; i < nums.size(); i++) {
+        fayda.push_back((nums[i] ^ k) - nums[i]);
+        normalSum += (ll)nums[i];
+    }
+
+    sort(fayda.begin(), fayda.end(), greater<int>());
+    for(int i=0; i < fayda.size() - 1; i += 2) {
+        ll pairSum = fayda[i] + fayda[i+1];
+        if(pairSum > 0) {
+            normalSum += pairSum;
+        }
+    }
+    return normalSum;
+}
+int main() {
+
+    vector<int> nums = {1, 2, 1};
+    int k = 3;
+    vector<vector<int>> edges = {{0, 1}, {0, 2}};
+
+    ll result = maximumValueSum(nums, k, edges);
+    cout << "Maximum Value Sum: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                 Find Words Containing Character
+/*
+vector<int> findWordsContaining(vector<string>& words, char x) {
+
+    vector <int> res;
+    for(int i=0 ; i < words.size() ; i++) {
+        for(int j=0 ; j < words[i].size() ; j++) {
+            if(words[i][j] == x) {
+                res.push_back(i);
+                break;
+            }
+        }
+    }
+    return res;
+}
+int main() {
+
+    vector<string> words = {"abc", "bcd", "aaaa", "cbc"};
+    char x = 'a';
+    
+    vector<int> indices = findWordsContaining(words, x);
+    
+    for(int i : indices) {
+        cout << i << " ";
+    }
+    return 0;
+}
+*/
+
+//                      Longest Palindrome by Concatenating Two Letter Words
+
+//                                          Approach 1
+/*
+int longestPalindrome(vector<string>& words) {
+
+    unordered_map<string, int> mp;
+
+    int result = 0;
+    for(string &word : words) {
+        string reversedWord = word;
+        swap(reversedWord[0], reversedWord[1]);
+        if(mp[reversedWord] > 0) {
+            result += 4;
+            mp[reversedWord]--;
+        } 
+        else {
+            mp[word]++;
+        }
+    }
+    // Check equal character words. Use only one
+    for(auto &it : mp) {
+        string word = it.first;
+        int count = it.second;
+
+        if(word[0] == word[1] && count > 0) {
+            result += 2;
+            break;
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<string> words = {"lc", "cl", "gg"};
+
+    int maxLength = longestPalindrome(words);
+    cout << "Longest palindrome length: " << maxLength << endl;
+
+    return 0;
+}
+*/
+//                                          Approach 2
+/*
+int longestPalindrome(vector<string>& words) {
+
+        unordered_map<string, int> mp;    
+        
+    // Update map with frequency
+    for(string &word : words) {
+        mp[word]++;
+    }
+        
+    // For frequency one waale strings
+    bool centerUsed = false; 
+        
+    int result = 0;  
+    for(string &word : words) {
+        string rev = word;
+        reverse(begin(rev), end(rev));    
+        if(rev != word) { 
+            if(mp[word] > 0 && mp[rev] > 0) {
+                mp[word]--;
+                mp[rev]--;
+                result += 4;
+            }
+        } 
+        else {
+            if(mp[word] >= 2) {
+                mp[word] -= 2;
+                result += 4;
+            } 
+            else if(mp[word] == 1 && centerUsed == false) {
+                mp[word]--;
+                result += 2;
+                // Ab use hogaya hai center wala
+                centerUsed = true; 
+            }
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<string> words = {"lc", "cl", "gg"};
+
+    int maxLength = longestPalindrome(words);
+    cout << "Longest palindrome length: " << maxLength << endl;
+
+    return 0;
+}
+*/
+
+//                          Largest Color Value in a Directed Graph
+/*
+int largestPathValue(string colors, vector<vector<int>>& edges) {
+
+    unordered_map<int, vector<int>> adj;
+    int N = colors.size();
+        
+    vector<int> indegree(N, 0);    
+    for(auto &vec : edges) {
+        int u = vec[0];
+        int v = vec[1];        
+        adj[u].push_back(v);
+        indegree[v]++;        
+    }
+        
+    queue <int> que;
+    vector<vector<int>> t(N, vector<int>(26, 0));    
+    for(int i=0; i<N; i++) {
+        if(indegree[i] == 0) {
+            que.push(i);
+            t[i][colors[i] - 'a'] = 1;
+        }
+    }
+    int answer = 0;    
+    int countNodes = 0;    
+    while(!que.empty()) {        
+        int u = que.front();
+        que.pop();        
+        countNodes++;    
+        answer = max(answer, t[u][colors[u] - 'a']);    
+        for(int &v : adj[u]) {        
+            for(int i=0; i<26; i++) {        
+                t[v][i] = max(t[v][i], t[u][i] + (colors[v] - 'a' == i));    
+            }    
+            indegree[v]--;
+            if(indegree[v] == 0) {
+                que.push(v);
+            }
+        }    
+    }    
+    if(countNodes < N) {
+        return -1;
+    }
+    return answer;
+}
+int main() {
+    
+    string colors = "abaca";
+    vector<vector<int>> edges = {{0, 1}, {0, 2}, {2, 3}, {3, 4}};
+
+    int result = largestPathValue(colors, edges);
+    cout << "Largest Color Value: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                             Divisible and Non-divisible Sums Difference
+
+//                                             Approach 1
+/*
+int differenceOfSums(int n, int m) {
+
+    int num1 = 0;
+    int num2 = 0;
+    for(int i=1; i <= n; i++) {
+        if(i % m != 0) {
+            num1 += i;
+        }
+        else {
+            num2 += i;
+        }
+    }
+    return num1 - num2;
+}
+int main() {
+    
+    int result1 = differenceOfSums(10, 3);
+    cout << "Difference of sums (n=10, m=3): " << result1 << endl;
+
+    return 0;
+}
+*/
+//                                             Approach 2
+/*
+int differenceOfSums(int n, int m) {
+
+    int k = n/m;
+    return n * (n+1) / 2 - m * k * (k+1);
+}
+int main() {
+    
+    int result1 = differenceOfSums(10, 3);
+    cout << "Difference of sums (n=10, m=3): " << result1 << endl;
+
+    return 0;
+}
+*/
+
+//                     Maximize the Number of Target Nodes After Connecting Trees I
+
+//                                          Approach 1 
+/*
+int bfs(int curr, unordered_map<int, vector<int>>& adj, int d, int N) {
+
+    queue <pair<int, int>> que;
+    que.push({curr, 0});
+    vector<bool> visited(N, false);
+    visited[curr] = true;
+
+    // Count the target nodes
+    int count = 0; 
+    while(!que.empty()) {
+        int currNode = que.front().first;
+        int dist = que.front().second;
+        que.pop();
+
+        if(dist > d) {
+            continue;
+        }
+        // Include current node in targetNodes count
+        count++; 
+        // Visit neighbors of currNode
+        for(auto &ngbr : adj[currNode]) {
+            if(!visited[ngbr]) {
+                visited[ngbr] = true;
+                que.push({ngbr, dist+1});
+            }
+        }
+    }
+    return count;
+}
+vector<int> findCount(vector<vector<int>>& edges, int d) {
+
+    int N = edges.size()+1;
+
+    // Adjacency list
+    unordered_map <int, vector<int>> adj;
+    for(auto& edge : edges) {
+        int u = edge[0];
+        int v = edge[1];
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<int> result(N);
+    for(int i=0; i<N; i++) {
+        result[i] = bfs(i, adj, d, N);
+    }
+    return result;
+}
+vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2, int k) {
+
+    // Tree 1 me kitne nodes hain
+    int N = edges1.size() + 1;
+
+    // Stores targetnodes count from each node within tree1 within k distance
+    vector<int> result1 = findCount(edges1, k); 
+    // Stores targetnodes count from each node within tree2 within k-1 distance
+    vector<int> result2 = findCount(edges2, k-1); 
+
+    int maxTargetNodesCount = *max_element(begin(result2), end(result2));
+    for(int i=0; i < result1.size(); i++) {
+        result1[i] += maxTargetNodesCount;
+    }
+    return result1;
+}
+int main() {
+    
+    vector<vector<int>> edges1 = {
+        {0, 1}, {0, 2}, {2, 3}, {2, 4}
+    };
+    vector<vector<int>> edges2 = {
+        {0, 1}, {0, 2}, {0, 3}, {2, 7}, {1, 4}, {4, 5}, {4, 6}
+    };
+    int k = 2;
+
+    vector<int> finalResult = maxTargetNodes(edges1, edges2, k);
+    cout << "Final Result: ";
+    for (int count : finalResult) {
+        cout << count << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+//                                          Approach 2
+/*
+int dfs(int curr, unordered_map<int, vector<int>>& adj, int d, int currNodeKaParent) {
+
+    if(d < 0) {
+        return 0;
+    }
+        
+    // Counting current node as 1
+    int count = 1; 
+    for(int &ngbr : adj[curr]) {
+        if(ngbr != currNodeKaParent) {
+            count += dfs(ngbr, adj, d-1, curr);
+        }
+    }
+    return count;
+}
+vector<int> findCount(vector<vector<int>>& edges, int d) {
+
+    int N = edges.size() + 1;
+
+    // Adjacency list
+    unordered_map <int, vector<int>> adj;
+    for(auto& edge : edges) {
+        int u = edge[0];
+        int v = edge[1];
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<int> result(N);
+    for(int i=0; i<N; i++) {
+        result[i] = dfs(i, adj, d, -1);
+    }
+    return result;
+}
+vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2, int k) {
+
+    // Tree 1 me kitne nodes hain
+    int N = edges1.size() + 1;
+
+    // Stores targetnodes count from each node within tree1 within k distance
+    vector<int> result1 = findCount(edges1, k); 
+    // Stores targetnodes count from each node within tree2 within k-1 distance
+    vector<int> result2 = findCount(edges2, k-1); 
+
+    int maxTargetNodesCount = *max_element(begin(result2), end(result2));
+    for(int i=0; i < result1.size(); i++) {
+        result1[i] += maxTargetNodesCount;
+    }
+    return result1;
+}
+int main() {
+    
+    vector<vector<int>> edges1 = {
+        {0, 1}, {0, 2}, {2, 3}, {2, 4}
+    };
+    vector<vector<int>> edges2 = {
+        {0, 1}, {0, 2}, {0, 3}, {2, 7}, {1, 4}, {4, 5}, {4, 6}
+    };
+    int k = 2;
+
+    vector<int> finalResult = maxTargetNodes(edges1, edges2, k);
+    cout << "Final Result: ";
+    for (int count : finalResult) {
+        cout << count << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                    Maximize the Number of Target Nodes After Connecting Trees II
+/*
+unordered_map <int, vector<int>> getAdj(vector<vector<int>>& edges) {
+
+    unordered_map <int, vector<int>> adj;
+    for(auto &edge : edges) {
+        int u = edge[0];
+        int v = edge[1];
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+    return adj;
+}
+void dfs(int curr, unordered_map <int, vector<int>>& adj, int parent, vector<int>& mark, int& zeroMarkedCount, int& oneMarkedCount) {
+
+    if(mark[curr] == 0) {
+        zeroMarkedCount++;
+    } 
+    else {
+        oneMarkedCount++;
+    }
+
+    for(auto &ngbr : adj[curr]) {
+        if(ngbr != parent) {
+            mark[ngbr] = (mark[curr] == 0) ? 1 : 0;
+            dfs(ngbr, adj, curr, mark, zeroMarkedCount, oneMarkedCount);
+        }
+    }
+}
+vector<int> maxTargetNodes(vector<vector<int>>& edges1, vector<vector<int>>& edges2) {
+
+    // Tree A
+    int N = edges1.size() + 1; 
+    // Tree B
+    int M = edges2.size() + 1; 
+
+    unordered_map <int, vector<int>> adjA = getAdj(edges1); 
+    unordered_map <int, vector<int>> adjB = getAdj(edges2);
+
+    vector<int> markA(N, -1);
+    // Mark 0th node as 0
+    markA[0] = 0; 
+    int zeroMarkedCountA = 0;
+    int oneMarkedCountA = 0;
+    dfs(0, adjA, -1, markA, zeroMarkedCountA, oneMarkedCountA);
+
+    vector<int> markB(M, -1);
+    // Mark 0th node as 0
+    markB[0] = 0;
+    int zeroMarkedCountB = 0;
+    int oneMarkedCountB = 0;
+    dfs(0, adjB, -1, markB, zeroMarkedCountB, oneMarkedCountB);
+    int maxFromTree2 = max(zeroMarkedCountB, oneMarkedCountB);
+
+    vector<int> result(N);
+    for(int i=0; i<N; i++) {
+        result[i] = (markA[i] == 0 ? zeroMarkedCountA : oneMarkedCountA) + maxFromTree2;
+    }
+    return result;
+}
+int main() {
+
+    vector<vector<int>> edges1 = {{0, 1}, {0, 2}, {2, 3}, {2, 4}};
+    vector<vector<int>> edges2 = {{0,1}, {0, 2}, {0, 3}, {2, 7}, {1, 4}, {4, 5}, {4, 6}};
+
+    vector<int> result = maxTargetNodes(edges1, edges2);
+    cout << "Result: ";
+    for(int num : result) {
+        cout << num << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                              Find Closest Node to Given Two Nodes
+
+//                                           Approach 1
+/*
+int n;
+void bfs(vector<int>& edges, int startNode, vector<int>& dist_node) {
+
+    queue<int> que;
+    que.push(startNode);
+    
+    vector<bool> visited(n, false);
+    visited[startNode] = true;
+
+    dist_node[startNode] = 0;
+    while(!que.empty()) {
+        int u = que.front();
+        que.pop();       
+        int v = edges[u];
+            
+        if(v != -1 && !visited[v]) {
+            visited[v] = true;
+            dist_node[v] = 1 + dist_node[u];
+            que.push(v);
+        }
+    }
+} 
+int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+
+    n = edges.size();    
+
+    vector<int> dist1(n, INT_MAX);
+    bfs(edges, node1, dist1);
+
+    vector<int> dist2(n, INT_MAX);
+    bfs(edges, node2, dist2);
+        
+    int minDistNode = -1;
+    int minDistTillNow = INT_MAX;
+    for(int i=0; i<n; i++) {
+        int maxD = max(dist1[i], dist2[i]);    
+        if(minDistTillNow > maxD) {
+            minDistNode = i;
+            minDistTillNow = maxD;
+        }
+    }
+    return minDistNode;        
+}
+int main() {
+
+    vector<int> edges = {2, 2, 3, -1};
+    int node1 = 0;
+    int node2 = 1;
+
+    int result = closestMeetingNode(edges, node1, node2);
+    cout << "Closest meeting node: " << result << endl;
+
+    return 0;
+}
+*/
+//                                           Approach 2
+/*
+int n;
+void dfs(vector<int>& edges, int startNode, vector<int>& dist_node, vector<bool>& visited) {
+
+    visited[startNode] = true;
+        
+    int v = edges[startNode];    
+    if(v != -1 && !visited[v]) {
+        visited[v] = true;
+        dist_node[v] = 1 + dist_node[startNode];
+        dfs(edges, v, dist_node, visited);
+    }
+}    
+int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+
+    n = edges.size();    
+
+    vector<bool> visited1(n, false);
+    vector<int> dist1(n, INT_MAX);
+    dist1[node1] = 0;
+    dfs(edges, node1, dist1, visited1);
+
+    vector<bool> visited2(n, false);
+    vector<int> dist2(n, INT_MAX);
+    dist2[node2] = 0;
+    dfs(edges, node2, dist2, visited2);
+        
+    int minDistNode = -1;
+    int minDistTillNow = INT_MAX;
+    for(int i=0; i<n; i++) {
+        int maxD = max(dist1[i], dist2[i]);    
+        if(minDistTillNow > maxD) {
+            minDistNode = i;
+            minDistTillNow = maxD;
+        }
+    }
+    return minDistNode;        
+}
+int main() {
+
+    vector<int> edges = {2, 2, 3, -1};
+    int node1 = 0;
+    int node2 = 1;
+
+    int result = closestMeetingNode(edges, node1, node2);
+    cout << "Closest meeting node: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                         Snakes and Ladders
+/*
+int n;
+pair<int, int> getCoord(int s) {
+
+    int row = (n-1) - (s-1)/n;
+    int col = (s-1) % n;
+        
+    if((n % 2 == 1 && row % 2 == 1)||(n % 2 == 0 && row % 2 == 0)) {
+        col = n-1-col;
+    }
+    return make_pair(row, col);
+}
+int snakesAndLadders(vector<vector<int>>& board) {
+
+    n = board.size();
+        
+    queue<int> que; 
+    que.push(1);
+
+    vector<vector<bool>> visited(n, vector<bool>(n, false));
+    visited[n-1][0] = true;
+
+    int steps = 0;
+    while(!que.empty()) {        
+        int N = que.size();
+        while(N--) {        
+            int x = que.front();
+            que.pop();
+            if(x == n*n) {
+                return steps;
+            }
+            for(int k=1; k <= 6; k++) {
+                if(x+k > n*n) {
+                    break;
+                }
+                pair<int, int> coord = getCoord(x+k);
+                int r = coord.first;
+                int c = coord.second;
+                if(visited[r][c] == true) {
+                    continue;
+                }
+                visited[r][c] = true;
+                if(board[r][c] == -1) {
+                    que.push(k+x);
+                }
+                else {
+                    que.push(board[r][c]);
+                }
+            }
+        }
+        steps++;
+    }    
+    return -1;
+}
+int main() {
+
+    vector<vector<int>> board = {
+        {-1, -1, -1, -1, -1, -1},
+        {-1, -1, -1, -1, -1, -1},
+        {-1, -1, -1, -1, -1, -1},
+        {-1, 35, -1, -1, 13, -1},
+        {-1, -1, -1, -1, -1, -1},
+        {-1, 15, -1, -1, -1, -1}
+    };
+
+    int result = snakesAndLadders(board);
+    cout << "Minimum moves to reach the end: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                Distribute Candies Among Children I
+/*
+int distributeCandies(int n, int limit) {
+
+    int count = 0;
+    for(int ch1=0; ch1 <= limit; ch1++) {
+        for(int ch2=0; ch2 <= limit; ch2++) {
+            int ch3 = n - (ch1 + ch2);
+            if(ch3 >= 0 && ch3 <= limit) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
+int main() {
+
+    int n = 5;
+    int limit = 2;
+
+    int result = distributeCandies(n, limit);
+    cout << "Number of ways to distribute candies: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                              Distribute Candies Among Children II
+/*
+long long distributeCandies(int n, int limit) {
+
+    // Child1
+    int minCh1 = max(0, n - 2*limit);
+    int maxCh1 = min(n, limit);
+
+    long long ways = 0;
+    for(int i = minCh1; i <= maxCh1; i++) { 
+        // For ch2 and ch3
+        int N = n-i; 
+        int minCh2 = max(0, N - limit);
+        int maxCh2 = min(N, limit);
+        ways += maxCh2 - minCh2 + 1;
+    }
+    return ways;
+}
+int main() {
+
+    int n = 5;
+    int limit = 2;
+
+    int result = distributeCandies(n, limit);
+    cout << "Number of ways to distribute candies: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                             Candy
+
+//                                           Approach 1
+/*
+int candy(vector<int>& ratings) {
+
+    int n = ratings.size();
+        
+    vector<int> L2R(n, 1);
+    vector<int> R2L(n, 1);
+        
+    // First comparing with only left neighbour
+    for(int i=1; i<n; i++) {
+        if(ratings[i] > ratings[i-1]) {
+            L2R[i] = max(L2R[i], L2R[i-1] + 1);
+        }
+    }
+        
+    // Then comparing with only right neighbour
+    for(int i = n-2; i >= 0; i--) {
+        if(ratings[i] > ratings[i+1]) {
+            R2L[i] = max(R2L[i], R2L[i+1] + 1);
+        }
+    }
+        
+    int result = 0;
+    for(int i=0; i<n; i++) {
+        result += max(L2R[i], R2L[i]);
+    }    
+    return result;
+}
+int main() {
+
+    vector<int> ratings = {1, 0, 2};
+
+    int totalCandies = candy(ratings);
+    cout << "Minimum candies needed: " << totalCandies << endl;
+
+    return 0;
+}
+*/
+//                                           Approach 2
+/*
+int candy(vector<int>& ratings) {
+
+    int n = ratings.size();
+    vector<int> count(n, 1);
+        
+    // First comparing with only left neighbour
+    for(int i=1; i<n; i++) {
+        if(ratings[i] > ratings[i-1]) {
+            count[i] = max(count[i], count[i-1] + 1);
+        }
+    }
+        
+    // Then comparing with only right neighbour
+    for(int i = n-2; i >= 0; i--) {
+        if(ratings[i] > ratings[i+1]) {
+            count[i] = max(count[i], count[i+1] + 1);
+        }
+    }
+        
+    int result = 0;
+    for(int i=0; i<n; i++) {
+        result += count[i];
+    }    
+    return result;
+}
+int main() {
+
+    vector<int> ratings = {1, 0, 2};
+
+    int totalCandies = candy(ratings);
+    cout << "Minimum candies needed: " << totalCandies << endl;
+
+    return 0;
+}
+*/
+
+//                                 Maximum Candies You Can Get from Boxes
+
+//                                              Approach 1
+/*
+int dfs(int box, vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, unordered_set<int>& visited, unordered_set<int>& foundBoxes) {
+        
+    if(visited.count(box)) {
+        return 0;
+    }
+
+    if(status[box] == 0) {
+        foundBoxes.insert(box);
+        return 0;
+    }
+
+    visited.insert(box);
+    int candiesCollected = candies[box];
+    for(int &insideBox : containedBoxes[box]) {
+        candiesCollected += dfs(insideBox, status, candies, keys, containedBoxes, visited, foundBoxes);
+    }
+
+    for(int &boxKey : keys[box]) {
+        // Can be opened
+        status[boxKey] = 1; 
+        if(foundBoxes.count(boxKey)) {
+            candiesCollected += dfs(boxKey, status, candies, keys, containedBoxes, visited, foundBoxes);
+        }
+    }
+    return candiesCollected;
+}
+int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        
+    unordered_set<int> visited;
+    unordered_set<int> foundBoxes;
+    
+    int candiesCollected = 0;
+    for(int &box : initialBoxes) {
+        candiesCollected += dfs(box, status, candies, keys, containedBoxes, visited, foundBoxes);
+    }
+    return candiesCollected;
+}
+int main() {
+    
+    vector<int> status = {1, 0, 1, 0};
+    vector<int> candies = {7, 5, 4, 100};
+    vector<vector<int>> keys = {{}, {}, {1}, {}};
+    vector<vector<int>> containedBoxes = {{1, 2}, {3}, {}, {}};
+    vector<int> initialBoxes = {0};
+
+    int result = maxCandies(status, candies, keys, containedBoxes, initialBoxes);
+    cout << "Maximum candies collected: " << result << endl;
+
+    return 0;
+}
+*/
+//                                              Approach 2
+/*
+int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        
+    unordered_set<int> visited;
+    unordered_set<int> foundBoxes;
+    
+    // Insert those which you have now and you can open it
+    queue<int> que; 
+
+    int candiesCollected = 0;
+    for(int &box : initialBoxes) {
+        foundBoxes.insert(box);
+        if(status[box] == 1) {
+            que.push(box);
+            visited.insert(box);
+            candiesCollected += candies[box];
+        }
+    }
+
+    while(!que.empty()) {
+        int box = que.front();
+        que.pop();
+        for(int &insideBox : containedBoxes[box]) {
+            foundBoxes.insert(insideBox);
+            if(status[insideBox] == 1 && !visited.count(insideBox)) {
+                que.push(insideBox);
+                visited.insert(insideBox);
+                candiesCollected += candies[insideBox];
+            }
+        }
+
+        // Can be opened in future if we reach this box
+        for(int &boxKey : keys[box]) {
+            status[boxKey] = 1; 
+            if(foundBoxes.count(boxKey) && !visited.count(boxKey)) {
+                que.push(boxKey);
+                visited.insert(boxKey);
+                candiesCollected += candies[boxKey];
+            }
+        }
+    }
+    return candiesCollected;
+}
+int main() {
+    
+    vector<int> status = {1, 0, 1, 0};
+    vector<int> candies = {7, 5, 4, 100};
+    vector<vector<int>> keys = {{}, {}, {1}, {}};
+    vector<vector<int>> containedBoxes = {{1, 2}, {3}, {}, {}};
+    vector<int> initialBoxes = {0};
+
+    int result = maxCandies(status, candies, keys, containedBoxes, initialBoxes);
+    cout << "Maximum candies collected: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                     Find the Lexicographically Largest String From the Box I
+
+//                                          Approach 1
+/*
+string answerString(string word, int numFriends) {
+
+    int n = word.length();
+    if(numFriends == 1) {
+        return word;
+    }
+    
+    int longestPossible = n - (numFriends - 1);
+
+    string result;
+    for(int i=0; i<n; i++) {
+        int canTakeLength = min(longestPossible, n-i);
+        result = max(result, word.substr(i, canTakeLength));
+    }
+    return result;
+}
+int main() {
+
+    string word = "dbca";
+    int numFriends = 2;
+
+    string result = answerString(word, numFriends);
+    cout << "Answer String: " << result << endl;
+
+    return 0;
+}
+*/
+//                                          Approach 2
+/*
+int bestStartingPoint(string& word, int n) {
+
+    // Best starting point
+    int i = 0; 
+
+    // Keep moving to find the best starting point
+    int j = 1; 
+    while(j < n) {
+        int k = 0;
+        // Skipping equal characters
+        while(j+k < n && word[i+k] == word[j+k]) {
+            k++;
+        }
+
+        // Updating best starting point
+        if(j+k < n && word[j+k] > word[i+k]) {
+            i = j; 
+            j = j+1;
+        } 
+        // Skipping already checked characters
+        else {
+            j = j + k + 1; 
+        }
+    }
+    return i;
+}
+string answerString(string word, int numFriends) {
+
+    int n = word.length();
+    if(numFriends == 1) {
+        return word;
+    }
+        
+    int i = bestStartingPoint(word, n);
+    int longestPossibleLength = n - (numFriends - 1);
+    int canTakePossible = min(longestPossibleLength, n-i);
+
+    return word.substr(i, canTakePossible);
+}
+int main() {
+
+    string word = "dbca";
+    int numFriends = 2;
+
+    string result = answerString(word, numFriends);
+    cout << "Answer String: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                             Lexicographically Smallest Equivalent String
+/*
+char DFS(unordered_map <char, vector<char>>& adj, char curr, vector<int>& visited) {
+
+    visited[curr - 'a'] = 1;
+
+    char minChar = curr;    
+    for(char &v : adj[curr]) {        
+        if(visited[v - 'a'] == 0) {
+            minChar = min(minChar, DFS(adj, v, visited));
+        }
+    }    
+    return minChar;
+}
+string smallestEquivalentString(string s1, string s2, string baseStr) {
+
+    int n = s1.length();
+    int m = baseStr.length();
+
+    unordered_map<char, vector<char>> adj;
+    for(int i=0; i<n; i++) {
+        char u = s1[i];
+        char v = s2[i];  
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+        
+    string result; 
+    for(int i=0 ; i<m; i++) {
+        char ch = baseStr[i];    
+        vector<int> visited(26, 0);    
+        result.push_back(DFS(adj, ch, visited));
+    }    
+    return result;
+}
+int main() {
+
+    string s1 = "parker";
+    string s2 = "morris";
+    string baseStr = "parser";
+    
+    string res = smallestEquivalentString(s1, s2, baseStr);
+    cout << "Smallest Equivalent String: " << res << endl;
+    
+    return 0;
+}
+*/
+
+//                                          Pascal's Triangle
+/*
+vector<vector<int>> generate(int numRows) {
+
+    vector<vector<int>> result(numRows);
+    for(int i=0; i < numRows; i++) {
+        result[i] = vector<int>(i+1, 1);    
+        for(int j=1; j<i; j++) {        
+            result[i][j] = result[i-1][j] + result[i-1][j-1];    
+        }            
+    }    
+    return result;
+}
+int main() {
+
+    int numRows = 5; 
+
+    vector<vector<int>> pascalTriangle = generate(numRows);
+    for(int i=0; i < pascalTriangle.size(); i++) {
+        for (int j=0; j < pascalTriangle[i].size(); j++) {
+            cout << pascalTriangle[i][j] << " ";
+        }
+        cout << endl;
+    }
+    return 0;
+}
+*/
+
+//                                        Next Permutation
+/*
+void nextPermutation(vector<int>& nums) {
+
+    int n = nums.size();
+        
+    int i = n-1;
+    for(; i>0; i--) {
+        if(nums[i] > nums[i-1]) {
+            break;
+        }
+    }
+    if(i != 0) {
+        for(int j = n-1; j >= i; j--) {
+            if(nums[j] > nums[i-1]) {
+                swap(nums[i-1], nums[j]);
+                break;
+            }
+        }    
+    }
+    reverse(nums.begin()+i, nums.end());
+}
+int main() {
+
+    vector<int> nums = {1, 2, 3};  
+
+    cout << "Original: ";
+    for (int num : nums) cout << num << " ";
+    cout << endl;
+
+    nextPermutation(nums);
+
+    cout << "Next Permutation: ";
+    for (int num : nums) cout << num << " ";
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                     String Duplicates Removal
+/*
+string removeDuplicates(string& s) {
+
+    unordered_map <char, int> visited;
+
+    string result;
+    for(int i=0; i < s.length(); i++) {
+        if(!visited[s[i]]){
+            visited[s[i]] = 1;
+            result.push_back(s[i]);
+        }
+    }
+    return result;
+}
+int main() {
+
+    string s = "geEksforGEeks";
+    cout << "String after removing duplicates: " << removeDuplicates(s) << endl;
+
+    return 0;
+}
+*/
+
+//                                    Remove Duplicate Letters
+/*
+string removeDuplicateLetters(string s) {
+
+    int n = s.length();
+        
+    vector<int> lastIndex(26); 
+    for(int i=0; i<n; i++) {
+        lastIndex[s[i] - 'a'] = i;
+    }
+        
+    vector<bool> visited(26, false);
+    string result;
+    for(int i=0; i<n; i++) {
+        if(!visited[s[i] - 'a']) {
+            while(result.length() > 0 && s[i] < result.back() && lastIndex[result.back() - 'a'] > i) {
+                visited[result.back() - 'a'] = 0;
+                result.pop_back();
+            }
+            result.push_back(s[i]);
+            visited[s[i] - 'a'] = 1;
+        }
+    }
+    return result;
+}
+int main() {
+
+    string s = "cbacdcbc";
+    cout << "String after removing duplicates: " << removeDuplicateLetters(s) << endl;
+
+    return 0;
+}
+*/
+
+//                                  Delete Node in a Linked List
+
+//                                            Approach 1
+/*
+class ListNode {
+    public:
+        int val;
+        ListNode* next;
+
+        ListNode(int x) {
+            val = x;
+            next = NULL;
+        }
+};
+void deleteNode(ListNode* node) {
+
+    ListNode* prev = NULL;
+    while(node && node->next) {
+        node->val = node->next->val;
+        prev = node;
+        node = node->next;
+    }
+    prev->next = NULL;
+    delete(node);
+}
+int main() {
+
+    ListNode* head = new ListNode(4);
+    head->next = new ListNode(5);
+    head->next->next = new ListNode(1);
+    head->next->next->next = new ListNode(9);
+
+    // Print original list
+    cout << "Original List: ";
+    ListNode* temp = head;
+    while (temp) {
+        cout << temp->val << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+
+    // Delete node with value 5 (i.e. second node)
+    ListNode* nodeToDelete = head->next;
+    deleteNode(nodeToDelete);
+
+    // Print list after deletion
+    cout << "List after deleting node with value 5: ";
+    temp = head;
+    while (temp) {
+        cout << temp->val << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+
+    // Free memory
+    while (head) {
+        ListNode* del = head;
+        head = head->next;
+        delete del;
+    }
+    return 0;
+}
+*/
+//                                            Approach 2
+/*
+class ListNode {
+    public:
+        int val;
+        ListNode* next;
+
+        ListNode(int x) {
+            val = x;
+            next = NULL;
+        }
+};
+void deleteNode(ListNode* node) {
+
+    ListNode* temp = node->next;
+    node->val = temp->val;
+    node->next = temp->next;
+    delete temp;
+}
+int main() {
+
+    ListNode* head = new ListNode(4);
+    head->next = new ListNode(5);
+    head->next->next = new ListNode(1);
+    head->next->next->next = new ListNode(9);
+
+    // Print original list
+    cout << "Original List: ";
+    ListNode* temp = head;
+    while (temp) {
+        cout << temp->val << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+
+    // Delete node with value 5 (i.e. second node)
+    ListNode* nodeToDelete = head->next;
+    deleteNode(nodeToDelete);
+
+    // Print list after deletion
+    cout << "List after deleting node with value 5: ";
+    temp = head;
+    while (temp) {
+        cout << temp->val << " ";
+        temp = temp->next;
+    }
+    cout << endl;
+
+    // Free memory
+    while (head) {
+        ListNode* del = head;
+        head = head->next;
+        delete del;
+    }
     return 0;
 }
 */
