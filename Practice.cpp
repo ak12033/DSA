@@ -10413,3 +10413,136 @@ int main() {
     return 0;
 }
 */
+
+//                 Maximum Difference Between Adjacent Elements in a Circular Array
+/*
+int maxAdjacentDistance(vector<int>& nums) {
+
+    int n = nums.size();
+
+    int maxi = 0;
+    for(int i=0; i<n; i++) {
+        int diff = abs(nums[i] - nums[(i+1) % n]);
+        maxi = max(maxi, diff);
+    }
+    return maxi;
+}
+int main() {
+
+    vector<int> nums = {1, 2, 4};
+
+    int result = maxAdjacentDistance(nums);
+    cout << "Maximum adjacent distance: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                  Maximum Difference by Remapping a Digit
+/*
+int minMaxDifference(int num) {
+
+    char ch;
+    string s = to_string(num);
+    for(int i=0; i < s.length(); i++) {
+        if(s[i] != '9') {
+            ch = s[i];
+            break;
+        }
+    }
+    for(int i=0; i < s.length(); i++) {
+        if(s[i] == ch) {
+            s[i] = '9';
+        }
+    }
+    int maxi = stoi(s);
+
+    string t = to_string(num);
+    ch = t[0];
+    for(int i=0; i < t.length(); i++){
+        if(t[i] == ch) {
+            t[i] = '0';
+        }
+    } 
+    int mini = stoi(t);
+        
+    return maxi - mini;
+}
+int main() {
+
+    int num = 11891; 
+    int result = minMaxDifference(num);
+    
+    cout << "For number " << num << ", the difference is: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                          Divide Array Into Arrays With Max Difference
+/*
+vector<vector<int>> divideArray(vector<int>& nums, int k) {
+
+    int n = nums.size();    
+        
+    sort(begin(nums), end(nums));
+    
+    vector<vector<int>> result;
+    for(int i=0; i <= n-3; i += 3) {
+        if(nums[i+2] - nums[i] > k) {
+            return {};
+        }    
+        result.push_back({nums[i], nums[i+1], nums[i+2]});
+    }    
+    return result;
+}
+int main() {
+
+    vector<int> nums = {1, 3, 4, 8, 7, 9, 3, 5, 1};
+    int k = 3;
+
+    vector<vector<int>> groups = divideArray(nums, k);
+    if(groups.empty()) {
+        cout << "Cannot divide array into groups satisfying the condition." << endl;
+    } 
+    else {
+        cout << "Divided groups:" << endl;
+        for(const auto& group : groups) {
+            for(int num : group) {
+                cout << num << " ";
+            }
+            cout << endl;
+        }
+    }
+    return 0;
+}
+*/
+
+//                          Partition Array Such That Maximum Difference Is K
+/*
+int partitionArray(vector<int>& nums, int k) {
+
+    int n = nums.size();
+    sort(begin(nums), end(nums));
+
+    int minVal = nums[0];
+    int count = 1;
+    for(int i=0; i<n; i++) {
+        if(nums[i] - minVal > k) {
+            count++;
+            minVal = nums[i];
+        }
+    }
+    return count;
+}
+int main() {
+
+    vector<int> nums = {3, 6, 1, 2, 5};
+    int k = 2;
+
+    int result = partitionArray(nums, k);
+    cout << "Minimum number of groups: " << result << endl;
+
+    return 0;
+}
+*/
