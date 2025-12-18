@@ -1,5 +1,7 @@
 #include <iostream>
+#include <sstream>
 #include <math.h>
+#include <iomanip>
 #include <limits.h>
 #include <string>
 #include <cstring>
@@ -3520,180 +3522,6 @@ int main() {
         cout << res << " ";
     }
     cout << endl;
-
-    return 0;
-}
-*/
-
-//                              Apply Operations to Maximize Score
-/*
-const int MOD = 1e9 + 7;
-
-long long findPower(long long a, long long b)
-{
-
-    if (b == 0)
-        return 1;
-    long long half = findPower(a, b / 2);
-    long long result = (half * half) % MOD;
-    if (b % 2 == 1)
-    {
-        result = (result * a) % MOD;
-    }
-    return result;
-}
-
-vector<int> getPrimes(int limit)
-{
-    vector<bool> isPrime(limit + 1, true);
-    vector<int> primes;
-
-    for (int i = 2; i * i <= limit; i++)
-    {
-        if (isPrime[i])
-        {
-            for (int j = i * i; j <= limit; j += i)
-            {
-                isPrime[j] = false;
-            }
-        }
-    }
-
-    for (int i = 2; i <= limit; i++)
-    {
-        if (isPrime[i])
-        {
-            primes.push_back(i);
-        }
-    }
-
-    return primes;
-}
-
-vector<int> findPrimeScores(vector<int> &nums)
-{
-    int n = nums.size();
-    vector<int> primeScores(n, 0);
-
-    int maxElement = *max_element(begin(nums), end(nums));
-    vector<int> primes = getPrimes(maxElement); // O(mloglogm)
-
-    for (int i = 0; i < n; i++)
-    { // O(n * log(m))
-        int num = nums[i];
-
-        for (int prime : primes)
-        {
-            if (prime * prime > num)
-            {
-                break;
-            }
-
-            if (num % prime != 0)
-            {
-                continue;
-            }
-
-            primeScores[i]++;
-            while (num % prime == 0)
-            {
-                num /= prime;
-            }
-        }
-        if (num > 1)
-        { // example : 15 : 3, 5
-            primeScores[i]++;
-        }
-    }
-
-    return primeScores;
-}
-
-vector<int> findNextGreater(vector<int> &primeScores)
-{
-    int n = primeScores.size();
-    vector<int> nextGreator(n, n);
-    stack<int> st;
-
-    for (int i = n - 1; i >= 0; i--)
-    {
-        while (!st.empty() && primeScores[st.top()] <= primeScores[i])
-        {
-            st.pop();
-        }
-
-        nextGreator[i] = st.empty() ? n : st.top();
-        st.push(i);
-    }
-
-    return nextGreator;
-}
-
-vector<int> findPrevGreater(vector<int> &primeScores)
-{
-    int n = primeScores.size();
-    vector<int> prevGreator(n, -1);
-    stack<int> st;
-
-    for (int i = 0; i < n; i++)
-    {
-        while (!st.empty() && primeScores[st.top()] < primeScores[i])
-        {
-            st.pop();
-        }
-
-        prevGreator[i] = st.empty() ? -1 : st.top();
-        st.push(i);
-    }
-
-    return prevGreator;
-}
-
-int maximumScore(vector<int> &nums, int k)
-{
-    vector<int> primeScores = findPrimeScores(nums);        // O(mloglogm + n*log(m))
-    vector<int> nextGreater = findNextGreater(primeScores); // O(n)
-    vector<int> prevGreater = findPrevGreater(primeScores); // O(n)
-
-    int n = nums.size();
-    vector<long long> subarrays(n, 0);
-
-    for (int i = 0; i < n; i++)
-    { // O(n)
-        subarrays[i] = (long long)(nextGreater[i] - i) * (i - prevGreater[i]);
-    }
-
-    vector<pair<int, int>> sortedNums(n);
-    for (int i = 0; i < n; i++)
-    {
-        sortedNums[i] = {nums[i], i};
-    }
-
-    sort(begin(sortedNums), end(sortedNums), greater<>()); // O(nlogn)
-
-    long long score = 1;
-
-    int idx = 0; // start from largest element greedily
-    while (k > 0)
-    { // O(k * log(operations))
-        auto [num, i] = sortedNums[idx];
-
-        long long operations = min((long long)k, subarrays[i]);
-
-        score = (score * findPower(num, operations)) % MOD;
-
-        k = (k - operations);
-        idx++;
-    }
-
-    return score;
-}
-int main() {
-
-    vector<int> nums = {5, 3, 2, 8, 6, 4};
-    int k = 3;
-        
-    cout << "Maximum Score: " << maximumScore(nums, k) << endl;
 
     return 0;
 }
@@ -10542,6 +10370,3119 @@ int main() {
 
     int result = partitionArray(nums, k);
     cout << "Minimum number of groups: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                              Maximum Matching of Players With Trainers
+/*
+int matchPlayersAndTrainers(vector<int>& players, vector<int>& trainers) {
+
+    int m = players.size();
+    int n = trainers.size();
+    sort(begin(players), end(players));
+    sort(begin(trainers), end(trainers));
+
+    int count = 0;
+    int i = 0;
+    int j = 0;
+    while(i < m && j < n) {
+        if(players[i] <= trainers[j]) {
+            count++;
+            i++;
+        }
+        j++;
+    }
+    return count;
+}
+int main() {
+    
+    vector<int> players = {4, 7, 9};
+    vector<int> trainers = {8, 2, 5, 8};
+
+    int matchedCount = matchPlayersAndTrainers(players, trainers);
+    cout << "Number of matched players and trainers: " << matchedCount << endl;
+
+    return 0;
+}
+*/
+
+//                      Convert Binary Number in a Linked List to Integer
+/*
+class ListNode {
+
+    public:
+        int val;
+        ListNode* next;
+
+        ListNode(int x) : val(x), next(nullptr) {
+
+        }
+};
+int getDecimalValue(ListNode* head) {
+
+    string binaryStr = "";
+    while(head) {
+        binaryStr += head->val + '0';
+        head = head->next;
+    }
+        
+    int result = 0;
+    int power = 0;
+    for(int i = binaryStr.length() - 1; i >= 0; i--) {
+        if(binaryStr[i] == '1') {
+            result += pow(2, power);
+        }
+        power++;
+    }
+    return result;
+}
+int main() {
+
+    ListNode* head = new ListNode(1);
+    head->next = new ListNode(0);
+    head->next->next = new ListNode(1);
+
+    cout << getDecimalValue(head) << endl; 
+
+    return 0;
+}
+*/
+
+//                                            Valid Word
+/*
+bool isValid(string word) {
+
+    if(word.length() < 3) {
+        return false;
+    }
+
+    bool hasVowel = false;
+    bool hasConsonant = false;
+    for(char ch : word) {
+        if(isalpha(ch)) {
+            ch = tolower(ch);
+            if(ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+                hasVowel = true;
+            } 
+            else {
+                hasConsonant = true;
+            }
+        } 
+        else if(!isdigit(ch)) {
+            return false;
+        }
+    }
+    return hasVowel && hasConsonant;
+}
+int main() {
+    
+    cout << isValid("234Adas") << endl;
+
+    return 0;
+}
+*/
+
+//                                           24 Game
+/*
+bool solve(vector<double>& cards) {
+
+    // Tolerance for floating-point comparison. To avoid floating point precission errors
+    // 0.01, 0.001 etc will work too.
+    double epsilon = 0.1; 
+
+    if(cards.size() == 1) {
+        return abs(cards[0] - 24) <= epsilon;
+    }
+
+    // Pick two possible numbers
+    for(int i=0; i < cards.size(); i++) {
+        for(int j=0; j < cards.size(); j++) {
+            if(i == j) {
+                continue;
+            }
+                
+            vector<double> temp;
+            for(int k=0; k < cards.size(); k++) {
+                if(k != i && k != j) {
+                    temp.push_back(cards[k]);
+                }
+            }
+
+            double a = cards[i];
+            double b = cards[j];
+
+            vector<double> possibleVal = {a+b, a-b, b-a, a*b}; 
+            if(abs(b) > 0.0) {
+                possibleVal.push_back(a/b);
+            }
+
+            if(abs(a) > 0.0) {
+                possibleVal.push_back(b/a);
+            }
+
+            for(double val : possibleVal) {
+                // Do
+                temp.push_back(val); 
+                // Explore
+                if(solve(temp) == true) { 
+                    return true;
+                }
+                // Undo
+                temp.pop_back(); 
+            }
+        }
+    }
+    return false;
+}
+bool judgePoint24(vector<int>& cards) {
+
+    vector<double> nums;
+    for(int i=0; i < cards.size(); i++) {
+        nums.push_back(1.0 * cards[i]);
+    }
+    return solve(nums);
+}
+int main() {
+
+    vector<int> test1 = {4, 1, 8, 7}; // true: (8 - 4) * (7 - 1) = 24
+    vector<int> test2 = {1, 2, 1, 2}; // false
+    vector<int> test3 = {3, 3, 8, 8}; // true: (8 / (3 - 8/3)) = 24
+
+    cout << boolalpha; // print "true" or "false" instead of 1/0
+    cout << "Test 1: " << judgePoint24(test1) << endl;
+    cout << "Test 2: " << judgePoint24(test2) << endl;
+    cout << "Test 3: " << judgePoint24(test3) << endl;
+
+    return 0;
+}
+*/
+
+//                               Number of Zero-Filled Subarrays
+
+//                                          Approach 1
+/*
+long long zeroFilledSubarray(vector<int>& nums) {
+
+    int n = nums.size();
+
+    long long result = 0;
+        
+    int i=0;
+    while(i < n) {        
+        long long zeros = 0;    
+        if(nums[i] == 0) {        
+            while(i < n && nums[i] == 0) {
+                i++;
+                zeros++;
+            }
+        } 
+        else {
+            i++;
+        }
+        result += (zeros)*(zeros+1)/2;
+    }    
+    return result;        
+}
+int main() {
+
+    vector<int> test1 = {0, 0, 0, 2, 0, 0}; 
+    vector<int> test2 = {1, 3, 0, 0, 2, 0, 0, 4};
+    vector<int> test3 = {2, 10, 2019};   
+
+    cout << "Test 1: " << zeroFilledSubarray(test1) << endl;
+    cout << "Test 2: " << zeroFilledSubarray(test2) << endl;
+    cout << "Test 3: " << zeroFilledSubarray(test3) << endl;
+
+    return 0;
+}
+*/
+//                                          Approach 2
+/*
+long long zeroFilledSubarray(vector<int>& nums) {
+
+    int n = nums.size();
+
+    long long result = 0;
+        
+    int countSubArray = 0;
+    for(int i=0; i<n; i++) {
+        if(nums[i] == 0) {
+            countSubArray += 1;
+        }
+        else {
+            countSubArray = 0;
+        }    
+        result += countSubArray;        
+    }    
+    return result;    
+}
+int main() {
+
+    vector<int> test1 = {0, 0, 0, 2, 0, 0}; 
+    vector<int> test2 = {1, 3, 0, 0, 2, 0, 0, 4};
+    vector<int> test3 = {2, 10, 2019};   
+
+    cout << "Test 1: " << zeroFilledSubarray(test1) << endl;
+    cout << "Test 2: " << zeroFilledSubarray(test2) << endl;
+    cout << "Test 3: " << zeroFilledSubarray(test3) << endl;
+
+    return 0;
+}
+*/
+
+//                            Find the Minimum Area to Cover All Ones I
+/*
+int minimumArea(vector<vector<int>>& grid) {
+
+    int m = grid.size();
+    int n = grid[0].size();
+
+    int minRow = m;
+    int maxRow = -1;
+    int minCol = n;
+    int maxCol = -1;
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(grid[i][j] == 1) {
+                minRow = min(minRow, i);
+                maxRow = max(maxRow, i);
+                minCol = min(minCol, j);
+                maxCol = max(maxCol, j);
+            }       
+        }
+    }
+    return (maxRow - minRow + 1) * (maxCol - minCol + 1);
+}
+int main() {
+
+    vector<vector<int>> grid = {
+        {0, 1, 0},
+        {1, 0, 1}
+    }; 
+
+    cout << "Test: " << minimumArea(grid) << endl;
+
+    return 0;
+}
+*/
+
+//                                 Alice and Bob Playing Flower Game
+/*
+long long flowerGame(int n, int m) {
+
+    return 1LL * ((n+1) / 2) * (m/2) + 1LL * (n/2) * ((m+1) / 2);
+}
+int main() {
+
+    cout << flowerGame(3, 2) << endl;
+
+    return 0;
+}
+*/
+
+//                           Find the Number of Ways to Place People I
+
+//                                          Approach 1
+/*
+int numberOfPairs(vector<vector<int>>& points) {
+
+    int n = points.size();
+    int result = 0;
+
+    for(int i=0; i<n; i++) {
+        // Candidate for upper-left
+        int x1 = points[i][0];
+        int y1 = points[i][1];   
+
+        for(int j=0; j<n; j++) {
+            if(i == j) {
+                continue;
+            }
+            // Candidate for lower-right
+            int x2 = points[j][0];
+            int y2 = points[j][1];   
+
+            // Condition: (x1, y1) must be upper-left of (x2, y2)
+            if(x1 <= x2 && y1 >= y2) {
+                bool hasPointInside = false;
+                // Check if some point lies inside or on the rectangle
+                for(int k=0; k<n; k++) {
+                    if(k == i || k == j) {
+                        continue;
+                    }
+                    int x3 = points[k][0];
+                    int y3 = points[k][1];
+                    if(x3 >= x1 && x3 <= x2 && y3 <= y1 && y3 >= y2) {
+                        hasPointInside = true;
+                        break;
+                    }
+                }
+                if(!hasPointInside) {
+                    result++;
+                }
+            }
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<vector<int>> test = {{6, 2}, {4, 4}, {2, 6}}; 
+    cout << "Test: " << numberOfPairs(test) << endl;
+
+    return 0;
+}
+*/
+//                                          Approach 2
+/*
+int numberOfPairs(vector<vector<int>>& points) {
+
+    int n = points.size();
+
+    // Sort: x ascending, if x same then sort as y descending
+    auto lambda = [](vector<int>& point1, vector<int>& point2) {
+        if(point1[0] == point2[0]) {
+            return point1[1] > point2[1];
+        }
+        return point1[0] < point2[0];
+    };
+
+    sort(points.begin(), points.end(), lambda);
+
+    int result = 0;
+    for(int i=0; i<n; i++) {
+        // Upper left
+        int x1 = points[i][0];
+        int y1 = points[i][1];   
+
+        int bestY = INT_MIN;
+        for(int j = i+1; j<n; j++) {
+            // Lower right
+            int x2 = points[j][0];
+            int y2 = points[j][1];   
+            // Condition: (x2, y2) must be above (x1, y1)
+            // Not lower right
+            if(y2 > y1) { 
+                continue;
+            }
+            if(y2 > bestY) {
+                result++;
+                bestY = y2;
+            }
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<vector<int>> test = {{6, 2}, {4, 4}, {2, 6}}; 
+    cout << "Test: " << numberOfPairs(test) << endl;
+
+    return 0;
+}
+*/
+
+//                           Find the Number of Ways to Place People II
+/*
+int numberOfPairs(vector<vector<int>>& points) {
+
+    int n = points.size();
+
+    // Sort: x ascending, if x same then sort as y descending
+    auto lambda = [](vector<int>& point1, vector<int>& point2) {
+        if(point1[0] == point2[0]) {
+            return point1[1] > point2[1];
+        }
+        return point1[0] < point2[0];
+    };
+
+    sort(points.begin(), points.end(), lambda);
+
+    int result = 0;
+    for(int i=0; i<n; i++) {
+        // Upper left
+        int x1 = points[i][0];
+        int y1 = points[i][1];   
+
+        int bestY = INT_MIN;
+        for(int j = i+1; j<n; j++) {
+            // Lower right
+            int x2 = points[j][0];
+            int y2 = points[j][1];   
+            // Condition: (x2, y2) must be above (x1, y1)
+            // Not lower right
+            if(y2 > y1) { 
+                continue;
+            }
+            if(y2 > bestY) {
+                result++;
+                bestY = y2;
+            }
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<vector<int>> test = {{6, 2}, {4, 4}, {2, 6}}; 
+    cout << "Test: " << numberOfPairs(test) << endl;
+
+    return 0;
+}
+*/
+
+//                              Number of People Aware of a Secret
+
+//                                           Recursive
+/*
+int MOD = 1e9 + 7;
+int solve(int day, int delay, int forget) {
+
+    if(day == 1) {
+        return 1;
+    }
+
+    int result = 0;
+    for(int prev = day-forget+1; prev <= day-delay; prev++) {
+        if(prev > 0) {
+            result = (result + solve(prev, delay, forget)) % MOD;
+        }
+    }
+    return result;
+}
+int peopleAwareOfSecret(int n, int delay, int forget) {
+        
+    int result = 0;
+    for(int day = n-forget+1; day <= n; day++) {
+        if(day > 0) {
+            result = (result + solve(day, delay, forget)) % MOD;
+        }
+    }
+    return result;
+}
+int main() {
+
+    cout << "Test: " << peopleAwareOfSecret(4, 1, 3) << endl;   
+
+    return 0;
+}
+*/
+//                                           Top-Down
+/*
+int MOD = 1e9 + 7;
+int solve(int day, int delay, int forget, vector<int>& dp) {
+
+    if(day == 1) {
+        return 1;
+    }
+
+    if(dp[day] != -1) {
+        return dp[day];
+    }
+
+    int result = 0;
+    for(int prev = day-forget+1; prev <= day-delay; prev++) {
+        if(prev > 0) {
+            result = (result + solve(prev, delay, forget, dp)) % MOD;
+        }
+    }
+    return dp[day] = result;
+}
+int peopleAwareOfSecret(int n, int delay, int forget) {
+
+    vector<int> dp(n+1, -1);
+
+    int result = 0;
+    for(int day = n-forget+1; day <= n; day++) {
+        if(day > 0) {
+            result = (result + solve(day, delay, forget, dp)) % MOD;
+        }
+    }
+    return result;
+}
+int main() {
+
+    cout << "Test: " << peopleAwareOfSecret(4, 1, 3) << endl;   
+
+    return 0;
+}
+*/
+//                                       Bottom-Up
+/*
+int MOD = 1e9 + 7;
+vector<int> dp;
+void solve(int n, int delay, int forget) {
+
+    dp[1] = 1;
+
+    for(int day = 2; day <= n; day++) {
+        int result = 0;
+        for(int prev = day-forget+1; prev <= day-delay; prev++) {
+            if(prev > 0) {
+                result = (result + dp[prev]) % MOD;
+            }
+        }
+        dp[day] = result;
+    }
+}
+int peopleAwareOfSecret(int n, int delay, int forget) {
+
+    dp.assign(n + 1, 0);
+    solve(n, delay, forget);
+
+    int result = 0;
+    for(int day = n-forget+1; day <= n; day++) {
+        if(day > 0) {
+            result = (result + dp[day]) % MOD;
+        }
+    }
+    return result;
+}
+int main() {
+
+    cout << "Test: " << peopleAwareOfSecret(4, 1, 3) << endl;   
+
+    return 0;
+}
+*/
+
+//                               Minimum Number of People to Teach
+/*
+int minimumTeachings(int n, vector<vector<int>>& languages, vector<vector<int>>& friendships) {
+
+    unordered_set<int> sadUsers;
+
+    for(auto &friends : friendships) {
+        int u = friends[0] - 1;
+        int v = friends[1] - 1;
+
+        unordered_set<int> langSet(begin(languages[u]), end(languages[u]));
+        bool canTalk = false;
+        for(int lang : languages[v]) {
+            if(langSet.count(lang)) {
+                canTalk = true;
+                break;
+            }
+        }
+
+        if(!canTalk) {
+            sadUsers.insert(u);
+            sadUsers.insert(v);
+        }
+    }
+
+    // Find max known language among sad users
+    vector<int> language(n+1, 0);
+    int mostKnownLang = 0;
+
+    for(int user : sadUsers) {
+        for(int lang : languages[user]) {
+            language[lang]++;
+            mostKnownLang = max(mostKnownLang, language[lang]);
+        }
+    }
+    return sadUsers.size() - mostKnownLang;    
+}
+int main() {
+
+    int n = 3;
+    vector<vector<int>> languages = {{2}, {1, 3}, {1, 2}, {3}};
+
+    vector<vector<int>> friendships = {{1, 4}, {1, 2}, {3, 4}, {2, 3}};
+
+    int result = minimumTeachings(n, languages, friendships);
+    cout << "Minimum teachings needed = " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                     Vowels Game in a String
+/*
+bool doesAliceWin(string s) {
+
+    for(char ch : s) {
+        if(ch == 'a' || ch == 'e' || ch == 'i'|| ch == 'o' || ch == 'u') {
+            return true;
+        }
+    }
+    return false;
+}
+int main() {
+
+    string s = "leetcoder";
+
+    bool result = doesAliceWin(s);
+    if(result) {
+        cout << "Alice wins";
+    }
+    else {
+        cout << "Alice loses";
+    }
+    return 0;
+}
+*/
+
+//                                      Vowel Spellchecker
+/*
+// Stores original words
+unordered_set<string> exactWords;   
+
+// Lowercase : original word       
+unordered_map<string, string> caseMap;     
+
+// Masked vowels : original word
+unordered_map<string, string> vowelMap;    
+    
+string toLower(string& s) {
+
+    string res = s;
+    for(char& c : res) {
+        c = tolower(c);
+    }
+    return res;
+}
+string maskVowels(string& s) {
+    
+    string res = s;
+    for(char& c : res) {
+        if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            c = '*';
+        }
+    }
+    return res;
+}
+string checkForMatch(string& query) {
+
+    // Exact match
+    if(exactWords.count(query)) {
+        return query;
+    }
+
+    // Case error match
+    string lowerQuery = toLower(query);
+    if(caseMap.count(lowerQuery)) {
+        return caseMap[lowerQuery];
+    }
+
+    // Vowel error match
+    string maskedQuery = maskVowels(lowerQuery);
+    if(vowelMap.count(maskedQuery)) {
+        return vowelMap[maskedQuery];
+    }
+
+    // No match
+    return "";
+}
+vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        
+    exactWords.clear();
+    caseMap.clear();
+    vowelMap.clear();
+
+    for(string word : wordlist) {
+        exactWords.insert(word);
+
+        string lowerWord = toLower(word);
+        // Add only 1st occurrence
+        if(caseMap.find(lowerWord) == caseMap.end()) { 
+            caseMap[lowerWord] = word;
+        }
+
+        string maskedWord = maskVowels(lowerWord);
+        // Add only 1st occurrence
+        if(vowelMap.find(maskedWord) == vowelMap.end()) { 
+            vowelMap[maskedWord] = word;
+        }
+    }
+
+    vector<string> result;
+    for(string query : queries) {
+        result.push_back(checkForMatch(query));
+    }
+    return result;
+}
+int main() {
+
+    vector<string> wordlist = {"KiTe", "kite", "hare", "Hare"};
+    vector<string> queries  = {"kite", "Kite", "KiTe", "Hare", "HARE", "Hear", "hear", "keti", "keet"};
+
+    vector<string> result = spellchecker(wordlist, queries);
+
+    cout << "Output:" << endl;
+    for(string s : result) {
+        cout << s << endl;
+    }
+
+    return 0;
+}
+*/
+
+//                                 Maximum Number of Words You Can Type
+/*
+int canBeTypedWords(string text, string brokenLetters) {
+
+    bool mp[26] = {false};
+    for(char& ch : brokenLetters) {
+        mp[ch - 'a'] = true;
+    }
+
+    int result = 0;
+    bool foundBroken = false;
+    for(char& ch : text) {
+        if(ch == ' ') {
+            if(!foundBroken) {
+                result++;
+            }
+            foundBroken = false;
+        } 
+        else if(mp[ch - 'a']) {
+            foundBroken = true; 
+        }
+    }
+    if(!foundBroken) {
+        result++;
+    }
+    return result;
+}
+int main() {
+
+    string text = "hello world"; 
+    string brokenLetters = "ad"; 
+
+    int ans = canBeTypedWords(text, brokenLetters);
+    cout << "Words that can be typed: " << ans << endl;
+
+    return 0;
+}
+*/
+
+//                                     Design Task Manager
+/*
+class TaskManager {
+
+    // Tasks sorted by priority, then taskId
+    priority_queue<pair<int, int>> maxHeap;         
+    
+    // TaskId -> current priority
+    unordered_map<int, int> taskPriorityMap; 
+    
+    // TaskId -> userId
+    unordered_map<int, int> taskOwnerMap;          
+
+    public:
+        // Initialize with a list of [userId, taskId, priority]
+        TaskManager(vector<vector<int>>& initialTasks) {
+
+            for(auto& task : initialTasks) {
+                add(task[0], task[1], task[2]);
+            }
+        }
+
+        // Add new task
+        void add(int userId, int taskId, int priority) {
+
+            maxHeap.push({priority, taskId});
+            taskPriorityMap[taskId] = priority;
+            taskOwnerMap[taskId] = userId;
+        }
+
+        // Edit existing task priority
+        void edit(int taskId, int newPriority) {
+
+            maxHeap.push({newPriority, taskId});
+            taskPriorityMap[taskId] = newPriority;
+        }
+
+        // Remove a task from the system
+        void rmv(int taskId) {
+
+            // Mark as invalid
+            taskPriorityMap[taskId] = -1; 
+        }
+
+        // Execute the top task and return its userId
+        int execTop() {
+            
+            while(!maxHeap.empty()) {
+                auto topPair = maxHeap.top();
+                int priority = topPair.first;
+                int taskId   = topPair.second;
+                maxHeap.pop();
+                if(priority == taskPriorityMap[taskId]) {
+                    // Mark as executed
+                    taskPriorityMap[taskId] = -1; 
+                    return taskOwnerMap[taskId];
+                }
+            }
+            // No tasks available
+            return -1; 
+        }
+};
+int main() {
+
+    // Initial tasks: {userId, taskId, priority}
+    vector<vector<int>> initialTasks = {
+        {1, 101, 10},
+        {2, 102, 20},
+        {3, 103, 15}
+    };
+
+    TaskManager tm(initialTasks);
+
+    // Testing methods
+    tm.add(4, 104, 5);      // Add a new task
+    tm.edit(102, 8);       // Decrease priority of task 102
+    cout << "Exec 1 -> User: " << tm.execTop() << endl;
+    tm.rmv(101);            // Remove task 101
+    tm.add(5, 105, 15);      // Add a new task
+    cout << "Exec 2 -> User: " << tm.execTop() << endl;   
+
+    return 0;
+}
+*/
+
+//                                      Design Spreadsheet
+/*
+class Spreadsheet {
+
+    public:
+        vector<vector<int>> sheet;
+
+        Spreadsheet(int rows) {
+            sheet.assign(rows, vector<int>(26, 0));    
+        }
+        
+        void setCell(string cell, int value) {
+
+            int col = cell[0] - 'A';
+            int row = stoi(cell.substr(1)) - 1;
+            sheet[row][col] = value;
+        }
+        
+        void resetCell(string cell) {
+
+            int col = cell[0] - 'A';
+            int row = stoi(cell.substr(1)) - 1;
+            sheet[row][col] = 0;
+        }
+        
+        int solve(string& s) {
+
+            if(isdigit(s[0])) {
+                return stoi(s);
+            }
+
+            int col = s[0] - 'A';
+            int row = stoi(s.substr(1)) - 1;
+            return sheet[row][col];
+        }
+
+        int getValue(string formula) {
+    
+            // Remove =
+            string s = formula.substr(1);
+            int plusIdx = s.find('+');
+
+            string left = s.substr(0, plusIdx);
+            string right = s.substr(plusIdx+1);
+            return solve(left) + solve(right);
+        }
+};
+int main() {
+
+    Spreadsheet sp(3);
+
+    cout << "Value of formula =5+7: " << sp.getValue("=5+7") << endl;
+    sp.setCell("A1", 10);
+    cout << "Value of formula =A1+6: " << sp.getValue("=A1+6") << endl;
+    sp.setCell("B2", 15);
+    cout << "Value of formula =A1+B2: " << sp.getValue("=A1+B2") << endl;
+    sp.resetCell("A1");
+    cout << "Value of formula =A1+B2: " << sp.getValue("=A1+B2") << endl;
+    
+    return 0;
+}
+*/
+
+//                                      Implement Router
+/*
+class Router {
+
+    private:
+        // Memory limit
+        int MAX_SIZE;  
+
+        // Key -> packet [source, dest, timestamp]
+        unordered_map<string, vector<int>> packetStore; 
+        
+        // Destination -> sorted timestamps
+        unordered_map<int, vector<int>> destTimestamps;  
+
+        // FIFO order
+        queue<string> que;  
+
+        string makeKey(int source, int destination, int timestamp) {
+
+            return to_string(source) + "#" + to_string(destination) + "#" + to_string(timestamp);
+        }
+
+    public:
+        Router(int memoryLimit) {
+
+            MAX_SIZE = memoryLimit;
+        }
+
+        bool addPacket(int source, int destination, int timestamp) {
+
+            string key = makeKey(source, destination, timestamp);
+
+            // Duplicate
+            if(packetStore.find(key) != packetStore.end()) {
+                return false;  
+            }
+
+            // Remove the oldest packet
+            if((int)packetStore.size() >= MAX_SIZE) { 
+                forwardPacket();
+            }
+
+            packetStore[key] = {source, destination, timestamp};
+            que.push(key);
+            destTimestamps[destination].push_back(timestamp);
+
+            return true;
+        }
+
+        vector<int> forwardPacket() {
+
+            // If there are no packets to forward, return an empty array.
+            if(packetStore.empty()) {
+                return {}; 
+            }
+
+            string key = que.front(); 
+            que.pop();
+
+            vector<int> packet = packetStore[key];
+            packetStore.erase(key);
+
+            // Remove earliest timestamp
+            int dest = packet[1];
+            destTimestamps[dest].erase(destTimestamps[dest].begin()); 
+
+            return packet;
+        }
+
+        int getCount(int destination, int startTime, int endTime) {
+
+            auto it = destTimestamps.find(destination);
+            if(it == destTimestamps.end() || it->second.empty()) {
+                return 0;
+            }
+
+            int i = lower_bound(begin(it->second), end(it->second), startTime) - begin(it->second);
+            int j = upper_bound(begin(it->second), end(it->second), endTime) - begin(it->second);
+            return j-i;
+        }
+};
+int main() {
+
+    Router router(3);
+    cout << boolalpha;
+
+    // ["addPacket", [1,4,90]]
+    cout << router.addPacket(1, 4, 90) << endl;
+
+    // ["addPacket", [2,5,90]]
+    cout << router.addPacket(2, 5, 90) << endl;
+
+    // ["addPacket", [1,4,90]]  (duplicate – should return false)
+    cout << router.addPacket(1, 4, 90) << endl;
+
+    // ["addPacket", [3,5,95]]
+    cout << router.addPacket(3, 5, 95) << endl;
+
+    // ["addPacket", [4,5,105]]  → capacity full → will forward oldest
+    cout << router.addPacket(4, 5, 105) << endl;
+
+    // ["forwardPacket", []]
+    vector<int> res = router.forwardPacket();
+    cout << "[" << res[0] << "," << res[1] << "," << res[2] << "]" << endl;
+
+    // ["addPacket", [5,2,110]]
+    cout << router.addPacket(5, 2, 110) << endl;
+
+    // ["getCount", [5,100,110]]
+    cout << router.getCount(5, 100, 110) << endl;
+
+    return 0;
+}
+*/
+
+//                                      Count Collisions on a Road
+/*
+int countCollisions(string directions) {
+
+    int n = directions.length();
+
+    // Left boundary
+    int i = 0; 
+    while(i < n && directions[i] == 'L') {
+        i++;
+    }
+
+    // Right boundary
+    int j = n-1;
+    while(j >= 0 && directions[j] == 'R') {
+        j--;
+    }
+
+    int collisions = 0;
+    while(i <= j) {
+        if(directions[i] != 'S') {
+            collisions++;
+        }
+        i++;
+    }
+    return collisions;
+}
+int main() {
+
+    string directions = "RLRSLL";
+    cout << "Total Collisions: " << countCollisions(directions) << endl;
+
+    return 0;
+}
+*/
+
+//                                Maximum Running Time of N Computers
+/*
+typedef long long ll;
+bool possible(vector<int>& batteries, ll mid_time, int n) {
+        
+    // Each computer will run mid_time minutes
+    ll target = n * mid_time;
+
+    ll sum = 0;    
+    for(int i=0; i < batteries.size(); i++) {  
+        target -= min((ll)batteries[i], mid_time);    
+        if(target <= 0) {
+            return true;
+        }
+    }
+    return false;
+}
+long long maxRunTime(int n, vector<int>& batteries) {
+        
+    ll l = *min_element(begin(batteries), end(batteries));
+    
+    long long sum_total_minutes = 0; 
+    for(auto& mints : batteries) {
+        sum_total_minutes += mints;
+    }
+        
+    ll r = sum_total_minutes / n;
+    ll result = 0;    
+    while(l <= r) {        
+        ll mid_time = l + (r-l)/2;    
+        if(possible(batteries, mid_time, n)) {
+            result = mid_time;
+            l = mid_time + 1;
+        } 
+        else {
+            r = mid_time - 1;
+        }
+    }    
+    return result;
+}
+int main() {
+
+    int n = 3;  
+    vector<int> batteries = {3, 3, 3};
+    vector<int> batteries1 = {5, 4, 3, 6};
+
+    long long result = maxRunTime(n, batteries1);
+    cout << "Maximum Run Time: " << result << " minutes" << endl;
+
+    return 0;
+}
+*/
+
+//                             Design Movie Rental System
+/*
+class MovieRentingSystem {
+
+    public:
+
+        typedef pair<int, int> P;
+
+        // Movie -> set<{price, shop}>
+        unordered_map <int, set<P>> available; 
+
+        // Movie -> set<shop, price>
+        unordered_map <int, set<P>> movieToShopPrice; 
+
+        // {price, shop, movie}
+        set <tuple<int, int, int>> rented; 
+
+        MovieRentingSystem(int n, vector<vector<int>>& entries) {
+
+            for(auto& entry : entries) {
+                int shop = entry[0];
+                int movie = entry[1];
+                int price = entry[2];
+                available[movie].insert({price, shop}); 
+                movieToShopPrice[movie].insert({shop, price});
+            }
+        }
+        
+        vector<int> search(int movie) {
+
+            vector<int> result;
+            int count = 0;
+            if(available.count(movie)) { 
+                for(auto& [_, shop] : available[movie]) {
+                    result.push_back(shop);
+                    count++;
+                    if(count >= 5) {
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+        
+        void rent(int shop, int movie) {
+
+            auto it = movieToShopPrice[movie].lower_bound({shop, INT_MIN}); 
+            int price = it->second;
+
+            available[movie].erase({price, shop}); 
+            rented.insert({price, shop, movie}); 
+        }
+        
+        void drop(int shop, int movie) {
+
+            auto it = movieToShopPrice[movie].lower_bound({shop, INT_MIN});
+            int price = it->second;
+
+            available[movie].insert({price, shop});
+            rented.erase({price, shop, movie});
+        }
+        
+        vector<vector<int>> report() {
+
+            vector<vector<int>> result;
+
+            int count = 0;
+            for(auto& [price, shop, movie] : rented) { 
+                result.push_back({shop, movie});
+                count++;
+                if(count >= 5) {
+                    break;
+                }
+            }
+            return result;
+        }
+};
+int main() {
+
+    // Movie entries: {shop, movie, price}
+    vector<vector<int>> entries = {
+        {0, 1, 5},
+        {0, 2, 6},
+        {0, 3, 7},
+        {1, 1, 4},
+        {1, 2, 7},
+        {2, 1, 5}
+    };
+
+    // Create system with 3 shops
+    MovieRentingSystem mrs(3, entries);
+
+    // Search for movie 1
+    auto s = mrs.search(1);
+    cout << "Search(1): ";
+    for(int shop : s) {
+        cout << shop << " ";
+    }
+    cout << endl;
+
+    // Rent some movies
+    mrs.rent(0, 1);  // shop 0 rents movie 1
+    mrs.rent(1, 2);  // shop 1 rents movie 2
+
+    // Print rented movies
+    auto r = mrs.report();
+    cout << "Report: ";
+    for(auto &item : r) {
+        cout << "(" << item[0] << "," << item[1] << ") ";
+    }
+    cout << endl;
+
+    // Drop a movie
+    mrs.drop(1, 2);
+
+    // Search for movie 2
+    auto s2 = mrs.search(2);
+    cout << "Search(2): ";
+    for(int shop : s2) {
+        cout << shop << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                           Triangle
+
+//                                           Recursive
+/*
+int solve(vector<vector<int>>& triangle, int row, int col) {
+
+    if(row == triangle.size() - 1) {
+        return triangle[row][col];
+    }
+        
+    int minPath = triangle[row][col] + min(solve(triangle, row+1, col), solve(triangle, row+1, col+1));
+    return minPath;
+}
+int minimumTotal(vector<vector<int>>& triangle) {
+
+    return solve(triangle, 0, 0);
+}
+int main() {
+
+    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    cout << "Minimum path sum: " << minimumTotal(triangle) << endl;
+
+    return 0;
+}
+*/
+//                                           Top-Down
+/*
+int solve(vector<vector<int>>& triangle, int row, int col, vector<vector<int>>& dp) {
+
+    if(row == triangle.size() - 1) {
+        return triangle[row][col];
+    }
+
+    if(dp[row][col] != -1) {
+        return dp[row][col];
+    }
+        
+    int minPath = triangle[row][col] + min(solve(triangle, row+1, col, dp), solve(triangle, row+1, col+1, dp));
+    return dp[row][col] = minPath;
+}
+int minimumTotal(vector<vector<int>>& triangle) {
+
+    int n = triangle.size();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+
+    return solve(triangle, 0, 0, dp);
+}
+int main() {
+
+    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    cout << "Minimum path sum: " << minimumTotal(triangle) << endl;
+
+    return 0;
+}
+*/
+//                                           Top-Down
+/*
+int solve(vector<vector<int>>& triangle, int row, int col, vector<vector<int>>& dp) {
+
+    if(row == triangle.size() - 1) {
+        return triangle[row][col];
+    }
+
+    if(dp[row][col] != -1) {
+        return dp[row][col];
+    }
+        
+    int minPath = triangle[row][col] + min(solve(triangle, row+1, col, dp), solve(triangle, row+1, col+1, dp));
+    return dp[row][col] = minPath;
+}
+int minimumTotal(vector<vector<int>>& triangle) {
+
+    int n = triangle.size();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+
+    return solve(triangle, 0, 0, dp);
+}
+int main() {
+
+    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    cout << "Minimum path sum: " << minimumTotal(triangle) << endl;
+
+    return 0;
+}
+*/
+//                                        Bottom-Up
+/*
+int solve(vector<vector<int>>& triangle) {
+
+    int n = triangle.size();
+    vector<vector<int>> dp(n, vector<int>(n, -1));
+
+    for(int i=0; i < triangle[n-1].size(); i++) {
+        dp[n-1][i] = triangle[n-1][i];
+    }
+
+    for(int row = n-2; row >= 0; row--) {
+        for(int col=0; col <= row; col++) {
+            dp[row][col] = triangle[row][col] + min(dp[row+1][col], dp[row+1][col+1]);
+        }
+    } 
+    return dp[0][0];
+}
+int minimumTotal(vector<vector<int>>& triangle) {
+
+    return solve(triangle);
+}
+int main() {
+
+    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    cout << "Minimum path sum: " << minimumTotal(triangle) << endl;
+
+    return 0;
+}
+*/
+//                                        Space-Optimised
+/*
+int solve(vector<vector<int>>& triangle) {
+
+    int n = triangle.size();
+    vector<int> curr(n, 0);
+    vector<int> next(n, 0);
+
+    for(int i=0; i < triangle[n-1].size(); i++) {
+        next[i] = triangle[n-1][i];
+    }
+
+    for(int row = n-2; row >= 0; row--) {
+        for(int col=0; col <= row; col++) {
+            curr[col] = triangle[row][col] + min(next[col], next[col+1]);
+        }
+        next = curr;
+    } 
+    return next[0];
+}
+int minimumTotal(vector<vector<int>>& triangle) {
+
+    return solve(triangle);
+}
+int main() {
+
+    vector<vector<int>> triangle = {{2}, {3, 4}, {6, 5, 7}, {4, 1, 8, 3}};
+    cout << "Minimum path sum: " << minimumTotal(triangle) << endl;
+
+    return 0;
+}
+*/
+
+//                                     Water Bottles II
+/*
+int maxBottlesDrunk(int numBottles, int numExchange) {
+
+    int empty = numBottles;
+    int drank = numBottles;
+    while(empty >= numExchange) {
+        empty -= numExchange;
+        drank++;
+        empty++;
+        numExchange++;
+    }
+    return drank;
+}
+int main() {
+   
+    int numBottles = 13;
+    int numExchange = 6;
+
+    int result = maxBottlesDrunk(numBottles, numExchange);
+    cout << "Maximum bottles drunk: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                  Pacific Atlantic Water Flow
+/*
+vector<vector<int>> directions = {{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
+void DFS(vector<vector<int>>& heights, int i, int j, int prevCellVal, vector<vector<bool>>& visited) {
+
+    if(i<0 || i >= heights.size() || j<0 || j >= heights[0].size()) { 
+        return;
+    }
+
+    if(heights[i][j] < prevCellVal || visited[i][j]) {
+        return;
+    }
+
+    visited[i][j] = true;
+    for(auto& dir : directions) {
+        int i_ = i + dir[0];
+        int j_ = j + dir[1];
+        DFS(heights, i_, j_, heights[i][j], visited);
+    }
+}
+vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+
+    int m = heights.size();
+    int n = heights[0].size(); 
+
+    // PacificVisited[i][j] = true, means [i][j] water can go to Pacific
+    vector<vector<bool>> pacificVisited(m, vector<bool>(n, false)); 
+
+    // AtlanticVisited[i][j] = true, means [i][j] water can go to atlantic
+    vector<vector<bool>> atlanticVisited(m, vector<bool>(n, false)); 
+
+
+    // Top Row and Bottom Row
+    // Top Row : Pacific connected already
+    // Bottom Row : atlantic connected already
+    for(int j=0; j<n; j++) {
+        DFS(heights, 0, j, INT_MIN, pacificVisited);
+        DFS(heights, m-1, j, INT_MIN, atlanticVisited);
+    }
+
+    // First col and last column
+    // First Column : Pacific connected already
+    // Last Column : atlantic connected already
+    for(int i=0; i<m; i++) {
+        DFS(heights, i, 0, INT_MIN, pacificVisited); 
+        DFS(heights, i, n-1, INT_MIN, atlanticVisited); 
+    }
+
+    vector<vector<int>> result;
+    for(int i=0; i<m; i++) {
+        for(int j=0; j<n; j++) {
+            if(pacificVisited[i][j] && atlanticVisited[i][j]) {
+                result.push_back({i, j});
+            }
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<vector<int>> heights = {
+        {1, 2, 2, 3, 5},
+        {3, 2, 3, 4, 4},
+        {2, 4, 5, 3, 1},
+        {6, 7, 1, 4, 5},
+        {5, 1, 1, 2, 4}
+    };
+
+    vector<vector<int>> ans = pacificAtlantic(heights);
+    for(auto& cell : ans) {
+        cout << "[" << cell[0] << ", " << cell[1] << "]" << endl;
+    }
+        
+    return 0;
+}
+*/
+
+//                      Count the Number of Computer Unlocking Permutations
+/*
+int M = 1e9+7;
+int countPermutations(vector<int>& complexity) {
+
+    int n = complexity.size();
+
+    long long result = 1;
+    for(int i=1; i<n; i++) {
+        if(complexity[i] <= complexity[0]) {
+            return 0;
+        }
+        result = (result * i) % M;
+    }        
+    return result;
+}
+int main() {
+
+    vector<int> complexity = {1, 2, 3};
+    cout << "Result = " << countPermutations(complexity) << endl;
+
+    return 0;
+}
+*/
+
+//                                  Swim in Rising Water
+/*
+vector<vector<int>> directions{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+bool visited[50][50];
+bool reachable(vector<vector<int>>& grid, int i, int j, int mid, vector<vector<bool>>& visited) {
+
+    int n = grid.size();
+
+    if(i<0 || i >= n || j<0 || j >= n || visited[i][j] || grid[i][j] > mid) {
+        return false;
+    }
+
+    if(i == n-1 && j == n-1) {
+        return true;
+    }
+
+    visited[i][j] = true;
+    for(vector<int> &dir : directions) {
+        int new_i = i + dir[0];
+        int new_j = j + dir[1];    
+        if(reachable(grid, new_i, new_j, mid, visited)) {
+            return true;
+        }
+    }
+    return false;
+}    
+int swimInWater(vector<vector<int>>& grid) {
+
+    int n = grid.size();
+        
+    int l = grid[0][0]; 
+    int r = n*n-1;
+    
+    int result = 0;
+    while(l <= r) {
+        int mid = l + (r-l) / 2;
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+        if(reachable(grid, 0, 0, mid, visited)) {
+            result = mid;
+            r = mid-1;
+        } 
+        else {
+            l = mid+1;
+        }
+    }    
+    return result;
+}
+int main() {
+
+    vector<vector<int>> grid = {
+        {0, 2},
+        {1, 3}
+    };
+
+    cout << "Minimum time: " << swimInWater(grid) << endl;
+
+    return 0;
+}
+*/
+
+//                                       Avoid Flood in The City
+/*
+vector<int> avoidFlood(vector<int>& rains) {
+
+    int n = rains.size();
+
+    // Lake -> last day it was filled
+    unordered_map<int, int> map;   
+
+    // Indices of dry days (rains[day] == 0)
+    set<int> dryDays;      
+
+    // Default all dry days to dry lake 1
+    vector<int> ans(n, 1);         
+    for(int day = 0; day < n; day++) {
+        int lake = rains[day];
+        if(lake == 0) {
+            // Record this dry day
+            dryDays.insert(day);                     
+        } 
+        else {
+            // Raining day — can't dry any lake
+            ans[day] = -1;                           
+            if(map.count(lake)) {
+                // Lake already filled previously
+                // Next dry day after it was last filled
+                auto it = dryDays.lower_bound(map[lake] + 1);   
+                if(it == dryDays.end()) {
+                    // No dry day available to empty this lake before raining again → flood
+                    return {};
+                }
+                // Use this dry day to dry the lake
+                ans[*it] = lake;                     
+                dryDays.erase(it);
+            }
+            // Record latest day this lake was filled
+            map[lake] = day;                         
+        }
+    }
+    return ans;
+}
+int main() {
+
+    vector<int> rains = {1, 2, 0, 0, 2, 1};
+
+    vector<int> res = avoidFlood(rains);
+
+    if(res.empty()) {
+        cout << "Flood occurs, no solution.\n";
+        return 0;
+    }
+
+    cout << "Result: ";
+    for(int x : res) cout << x << " ";
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                    Count Covered Buildings
+/*
+int countCoveredBuildings(int n, vector<vector<int>>& buildings) {
+
+    unordered_map<int, pair<int,int>> yToMinMaxX;
+    unordered_map<int, pair<int,int>> xToMinMaxY;
+
+    for(auto& building : buildings) {
+        int x = building[0];
+        int y = building[1];
+
+        if(!yToMinMaxX.count(y)) {
+            yToMinMaxX[y] = {INT_MAX, INT_MIN};
+        }
+        if(!xToMinMaxY.count(x)) {
+            xToMinMaxY[x] = {INT_MAX, INT_MIN};
+        }
+        yToMinMaxX[y].first  = min(yToMinMaxX[y].first, x);
+        yToMinMaxX[y].second = max(yToMinMaxX[y].second, x);
+
+        xToMinMaxY[x].first = min(xToMinMaxY[x].first, y);
+        xToMinMaxY[x].second = max(xToMinMaxY[x].second, y);
+    }
+
+    int result = 0;
+    for(auto& building : buildings) {
+        int x = building[0];
+        int y = building[1];
+
+        auto& xr = yToMinMaxX[y];
+        auto& yr = xToMinMaxY[x];
+        if(xr.first < x && x < xr.second && yr.first < y && y < yr.second) {
+            result++;
+        }
+    }
+    return result;
+}
+int main() {
+
+    int n = 3;
+    vector<vector<int>> buildings = {{1,2}, {2,2}, {3,2}, {2,1}, {2,3}};
+
+    int result = countCoveredBuildings(n, buildings);
+    cout << "Covered buildings = " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                     Count Mentions Per User
+/*
+void applyMessageEvent(vector<string> event, vector<int>& mentionCount, vector<int>& offlineTime) {
+
+    int timestamp = stoi(event[1]);
+
+    vector<string> ids;
+    string s = event[2];
+    string token = "";
+    for(char c : s) {
+        if(c == ' ') {
+            if(!token.empty()) {
+                ids.push_back(token);
+                token.clear();
+            }
+        } 
+        else {
+            token.push_back(c);
+        }
+    }
+    // Last token
+    if(!token.empty()) {
+        ids.push_back(token);  
+    }
+
+    // Process all IDs
+    for(string id : ids) {
+        if(id == "ALL") {
+            for(int i=0; i < mentionCount.size(); i++) {
+                mentionCount[i]++;
+            }
+        } 
+        else if(id == "HERE") {
+            for(int i=0; i < mentionCount.size(); i++){
+                if(offlineTime[i] == 0 || offlineTime[i] + 60 <= timestamp) {
+                    mentionCount[i]++;
+                }
+            }
+        } 
+        else {
+            // Fetch id value i.e. x from idx (id0, id1 etc)
+            mentionCount[stoi(id.substr(2))]++; 
+        }
+    }
+}
+vector<int> countMentions(int numberOfUsers, vector<vector<string>>& events) {
+
+    vector<int> mentionCount(numberOfUsers);
+    vector<int> offlineTime(numberOfUsers);
+
+    auto lambda = [] (vector<string>& vec1, vector<string>& vec2) {
+        int t1 = stoi(vec1[1]);
+        int t2 = stoi(vec2[1]);
+
+        if(t1 == t2) {
+            // Comparing 'O' of "OFFLINE" with 'M' of "MESSAGE"
+            // OFFLINE should come first
+            return vec1[0][1] > vec2[0][1];      
+        }
+        return t1 < t2;
+    };
+
+    sort(events.begin(), events.end(), lambda);
+
+    for(auto& event: events) {
+        if(event[0] == "MESSAGE") {
+            applyMessageEvent(event, mentionCount, offlineTime);
+        }
+        else if(event[0] == "OFFLINE") {
+            int timestamp = stoi(event[1]);
+            int id = stoi(event[2]);
+            offlineTime[id] = timestamp;
+        }
+    }
+    return mentionCount;
+}
+int main() {
+
+    int numberOfUsers = 5;
+    vector<vector<string>> events = {
+        {"MESSAGE", "10", "ALL"},
+        {"OFFLINE", "20", "2"},
+        {"MESSAGE", "30", "id1 id3"},
+        {"MESSAGE", "40", "HERE"},
+        {"OFFLINE", "50", "1"},
+        {"MESSAGE", "80", "id2 ALL"}
+    };
+
+    vector<int> result = countMentions(numberOfUsers, events);
+    for(int x : result) {
+        cout << x << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                                    Trapping Rain Water II
+/*
+typedef pair<int, pair<int, int>> Cell;
+vector<vector<int>> directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+int trapRainWater(vector<vector<int>>& heightMap) {
+
+    int rows = heightMap.size();
+    int cols = heightMap[0].size();
+
+    // Min-heap to always pick the lowest height cell first
+    priority_queue<Cell, vector<Cell>, greater<Cell>> minHeap;
+
+    // To avoid processing the same cell more than once
+    vector<vector<bool>> visited(rows, vector<bool>(cols, false));
+
+    // Add leftmost and rightmost columns for all rows
+    for(int r=0; r < rows; r++) {
+        // Left boundary cell
+        minHeap.push({heightMap[r][0], {r, 0}});
+        visited[r][0] = true;
+
+        // Right boundary cell
+        minHeap.push({heightMap[r][cols - 1], {r, cols - 1}});
+        visited[r][cols - 1] = true;
+    }
+
+    // Add top and bottom rows for all columns
+    for(int c=0; c < cols; c++) {
+        // Top boundary
+        minHeap.push({heightMap[0][c], {0, c}});
+        visited[0][c] = true;
+
+        // Bottom boundary
+        minHeap.push({heightMap[rows - 1][c], {rows - 1, c}});
+        visited[rows - 1][c] = true;
+    }
+
+    int totalWater = 0;
+    while(!minHeap.empty()) {
+        // Pop the lowest boundary cell
+        auto [boundaryHeight, cell] = minHeap.top();
+        minHeap.pop();
+
+        int row = cell.first;
+        int col = cell.second;
+        for(auto& dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            if(newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && !visited[newRow][newCol]) {
+                totalWater += max(0, boundaryHeight - heightMap[newRow][newCol]);       
+                minHeap.push({max(boundaryHeight, heightMap[newRow][newCol]), {newRow, newCol}});                    
+                visited[newRow][newCol] = true;
+            }
+        }
+    }
+    return totalWater;
+}
+int main() {
+
+    vector<vector<int>> heightMap = {
+        {1, 4, 3, 1, 3, 2},
+        {3, 2, 1, 3, 2, 4},
+        {2, 3, 3, 2, 3, 1}
+    };
+
+    int result = trapRainWater(heightMap);
+    cout << "Total trapped rain water: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                     Find Closest Person
+/*
+int findClosest(int x, int y, int z) {
+
+    int dxz = abs(x-z);
+    int dyz = abs(y-z);
+    if(dxz < dyz) {
+        return 1;
+    }
+    else if(dxz > dyz) {
+        return 2;
+    }
+    return 0;
+}
+int main() {
+
+    int x = 2;
+    int y = 7;
+    int z = 4;
+
+    int result = findClosest(x, y, z);
+    cout << "Result: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                 Minimum Time to Make Rope Colorful
+/*
+int minCost(string colors, vector<int>& neededTime) {
+
+    int n = colors.size();
+
+    int time = 0;
+    int prevMax = 0;
+    for(int i=0; i<n; i++) {
+        if(i>0 && colors[i] != colors[i-1]) {
+            prevMax = 0;
+        }
+        int curr = neededTime[i];
+        time += min(prevMax, curr);
+        prevMax = max(prevMax, curr);
+    }
+    return time;
+}
+int main() {
+
+    string colors = "abaac";
+    vector<int> neededTime = {1, 2, 3, 4, 5};
+
+    int result = minCost(colors, neededTime);
+    cout << "Minimum time to remove balloons: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                                  Design a Food Rating System
+/*
+class FoodRatings {
+
+    public:
+    unordered_map <string, set<pair<int, string>>> cuisine_ratings_food;
+    unordered_map <string, string> food_cuisine;
+    unordered_map <string, int> food_rating;
+
+    FoodRatings(vector<string>& foods, vector<string>& cuisines, vector<int>& ratings) {
+            
+        int n = foods.size();    
+        for(int i=0; i<n; i++) {
+            string food = foods[i];
+            string cuisine = cuisines[i];
+            int rating = ratings[i];
+                
+            cuisine_ratings_food[cuisine].insert({-rating, food});
+            food_cuisine[food] = cuisine;
+            food_rating[food]  = rating;            
+        }
+    }  
+    void changeRating(string food, int newRating) {
+            
+        string cuisine = food_cuisine[food];
+        int oldRating  = food_rating[food];
+            
+        cuisine_ratings_food[cuisine].erase({-oldRating, food});
+        cuisine_ratings_food[cuisine].insert({-newRating, food});
+        food_rating[food] = newRating;        
+    }    
+    string highestRated(string cuisine) {
+
+        // return cuisine_ratings_food[cuisine].begin()->second;
+        // Or
+        return (*cuisine_ratings_food[cuisine].begin()).second;
+    }
+};
+int main() {
+
+    vector<string> foods = {
+        "kimchi", "miso", "sushi",
+        "moussaka", "ramen", "bulgogi"
+    };
+    vector<string> cuisines = {
+        "korean", "japanese", "japanese",
+        "greek", "japanese", "korean"
+    };
+    vector<int> ratings = {9, 12, 8, 15, 14, 7};
+
+    // Operation 1: FoodRatings constructor
+    FoodRatings fr(foods, cuisines, ratings);
+
+    // Operation 2
+    cout << fr.highestRated("korean") << endl;    // kimchi
+
+    // Operation 3
+    cout << fr.highestRated("japanese") << endl;  // ramen
+
+    // Operation 4
+    fr.changeRating("sushi", 16);
+
+    // Operation 5
+    cout << fr.highestRated("japanese") << endl;  // sushi
+
+    // Operation 6
+    fr.changeRating("ramen", 16);
+
+    // Operation 7
+    cout << fr.highestRated("japanese") << endl;  // ramen
+
+    return 0;
+}
+*/
+
+//                                    Compare Version Numbers
+/*
+vector<string> getTokens(string version) {
+
+    stringstream v(version);
+    string token_v = "";
+
+    vector<string> version_tokens;
+    while(getline(v, token_v, '.')) {
+        version_tokens.push_back(token_v);
+    }
+    return version_tokens;
+}
+int compareVersion(string version1, string version2) {
+
+    vector<string> v1 = getTokens(version1);
+    vector<string> v2 = getTokens(version2);  
+        
+    int m = v1.size();
+    int n = v2.size();
+            
+    int  i=0;
+    while(i<m || i<n) {        
+        int a = i<m ? stoi(v1[i]) : 0 ;
+        int b = i<n ? stoi(v2[i])  : 0 ;
+            
+        if(a>b) {        
+            return 1;
+        }
+        else if(b>a) {
+            return -1;
+        }
+        else {
+            i++;
+        }
+    }
+    return 0;
+}
+int main() {
+
+    string version1 = "1.01";
+    string version2 = "1.001";
+
+    int result = compareVersion(version1, version2);
+    cout << result << endl;
+
+    return 0;
+}
+*/
+
+//                                     Largest Triangle Area
+/*
+double largestTriangleArea(vector<vector<int>>& points) {
+
+    int n = points.size();
+    double maxArea = 0.0;
+    for(int i=0; i<n; i++) {
+        for(int j = i+1; j<n; j++) {
+            for(int k = j+1; k<n; k++) {
+                double x1 = points[i][0];
+                double y1 = points[i][1];
+
+                double x2 = points[j][0];
+                double y2 = points[j][1];
+
+                double x3 = points[k][0];
+                double y3 = points[k][1];
+
+                // Heron's Formula
+                double a = hypot(x2-x1, y2-y1);
+                double b = hypot(x2-x3, y2-y3);
+                double c = hypot(x3-x1, y3-y1);
+                double s = (a+b+c) * 0.5;
+                double heron = sqrt(s * (s-a) * (s-b) * (s-c));
+
+                // Shoelace Formula
+                double shoelace = 0.5 * abs(x1 * (y2-y3) + x2 * (y3-y1) + x3 * (y1-y2));
+
+                maxArea = max({maxArea, heron, shoelace});
+            }
+        }
+    }
+    return maxArea;
+}
+int main() {
+
+    vector<vector<int>> points = {
+        {0, 0},
+        {0, 1},
+        {1, 0},
+        {0, 2},
+        {2, 0}
+    };
+
+    cout << fixed << setprecision(4) << largestTriangleArea(points) << endl;
+
+    return 0;
+}
+*/
+
+//                               Find Triangular Sum of an Array
+/*
+int triangularSum(vector<int>& nums) {
+
+    int n = nums.size();
+    for(int size = n-1; size >= 1; size--) {
+        for(int i=0; i < size; i++) {
+            nums[i] = (nums[i] + nums[i+1]) % 10;
+        }    
+    }
+    return nums[0];
+}
+int main() {
+
+    vector<int> nums = {1, 2, 3, 4, 5};
+    cout << triangularSum(nums) << endl;
+
+    return 0;
+}
+*/
+
+//                                    Coupon Code Validator
+/*
+bool checkValidCode(string& code) {
+
+    if(code.empty()) {
+        return false;
+    }
+    for(char& ch : code) {
+        if(!isalnum(ch) && ch != '_') {
+            return false;
+        }
+    }
+    return true;
+}
+vector<string> validateCoupons(vector<string>& code, vector<string>& businessLine, vector<bool>& isActive) {
+        
+    unordered_map<string, int> mp = {
+        {"electronics", 0},
+        {"grocery", 1},
+        {"pharmacy", 2},
+        {"restaurant", 3}
+    };
+
+    // {BusinessLineIntegerValue, code}
+    vector<pair<int, string>> temp; 
+    for(int i=0; i < code.size(); i++) {
+        if(isActive[i] && mp.count(businessLine[i]) && checkValidCode(code[i])) {
+            temp.push_back({mp[businessLine[i]], code[i]});
+        }
+    }
+    sort(begin(temp), end(temp));
+        
+    vector<string> result;
+    for(auto& it : temp) {
+        result.push_back(it.second);
+    }
+    return result;
+}
+int main() {
+
+    vector<string> code = {"SAVE20", "", "PHARMA5", "SAVE@20"};
+    vector<string> businessLine = {"restaurant", "grocery", "pharmacy", "restaurant"};
+    vector<bool> isActive = {true, true, true, true};
+
+    vector<string> result = validateCoupons(code, businessLine, isActive);
+    cout << "Valid Coupons:\n";
+    for(string& s : result) {
+        cout << s << endl;
+    }
+
+    return 0;
+}
+*/
+
+//                          Find the Minimum Amount of Time to Brew Potions
+/*
+long long minTime(vector<int>& skill, vector<int>& mana) {
+
+    int n = skill.size();
+    int m = mana.size();
+
+    vector<long long> finishTime(n, 0);
+    for(int j=0; j<m; j++) {
+        finishTime[0] += 1LL * mana[j] * skill[0];
+
+        for(int i=1; i<n; i++) {
+            finishTime[i] = max(finishTime[i], finishTime[i-1]) + 1LL * mana[j] * skill[i];
+        }
+        for(int i = n-1; i>0; i--) {
+            finishTime[i-1] = finishTime[i] - 1LL * mana[j] * skill[i];
+        }
+    }
+    return finishTime[n-1];
+}
+int main() {
+
+    vector<int> skill = {1, 5, 2, 4};
+    vector<int> mana  = {5, 1, 4, 2};
+
+    long long result = minTime(skill, mana);
+    cout << result << endl;
+
+    return 0;
+}
+*/
+
+//                             Number of Ways to Divide a Long Corridor
+/*
+int mod = 1e9 + 7; 
+int numberOfWays(string corridor) {
+
+    vector<int> pos_seats;    
+    for(int i=0; i < corridor.size(); i++) {
+        if(corridor[i] == 'S') {
+            pos_seats.push_back(i);
+        }
+    }
+        
+    if(pos_seats.size() % 2 || pos_seats.size() == 0) {
+        return 0;
+    }
+        
+    // End index of the starting subarray having 2 seats
+    int prev = pos_seats[1]; 
+
+    long long result = 1;
+    for(int i=2; i < pos_seats.size(); i += 2) {
+        int length = pos_seats[i] - prev;
+        result = (result * length) % mod;    
+        prev = pos_seats[i+1];
+    }    
+    return result;
+}
+int main() {
+
+    string corridor = "SSPPSPS";
+    cout << numberOfWays(corridor) << endl;
+
+    return 0;
+}
+*/
+
+//                          Taking Maximum Energy From the Mystic Dungeon
+
+//                                          Recursive
+/*
+int solve(vector<int>& energy, int k, int i) {
+
+    if(i >= energy.size()) { 
+        return 0;
+    }
+
+    // Take energy at i and then best from (i + k) onwards - Recursion leap of faith
+    return energy[i] + solve(energy, k, i+k);
+}
+int maximumEnergy(vector<int>& energy, int k) {
+    
+    int n = energy.size();
+
+    int maxEnergy = INT_MIN;
+    for(int i=0; i<n; i++) {
+        maxEnergy = max(maxEnergy, solve(energy, k, i));
+    }
+    return maxEnergy;
+}
+int main() {
+
+    vector<int> energy = {5, 2, -10, -5, 1};
+    int k = 3;
+
+    int result = maximumEnergy(energy, k);
+    cout << result << endl;
+
+    return 0;
+}
+*/
+//                                          Top-Down
+/*
+int solve(vector<int>& energy, int k, int i, vector<int>& t) {
+
+    if(i >= energy.size()) { 
+        return 0;
+    }
+
+    if(t[i] != INT_MIN) {
+        return t[i];
+    }
+
+    // Take energy at i and then best from (i + k) onwards - Recursion leap of faith
+    return t[i] = energy[i] + solve(energy, k, i+k, t);
+}
+int maximumEnergy(vector<int>& energy, int k) {
+    
+    int n = energy.size();
+    vector<int> t(n, INT_MIN);
+
+    int maxEnergy = INT_MIN;
+    for(int i=0; i<n; i++) {
+        maxEnergy = max(maxEnergy, solve(energy, k, i, t));
+    }
+    return maxEnergy;
+}
+int main() {
+
+    vector<int> energy = {5, 2, -10, -5, 1};
+    int k = 3;
+
+    int result = maximumEnergy(energy, k);
+    cout << result << endl;
+
+    return 0;
+}
+*/
+//                                        Bottom-Up
+/*
+int solve(vector<int>& energy, int k) {
+
+    int n = energy.size();
+
+    vector<int> t(n, 0);
+    for(int i = n-1; i >= 0; i--) {
+        if(i+k < n) {
+            t[i] = energy[i] + t[i+k];
+        }
+        else {
+            t[i] = energy[i];
+        }
+    }
+    int maxEnergy = INT_MIN;
+    for(int i=0; i<n; i++) {
+        maxEnergy = max(maxEnergy, t[i]);
+    }
+    return maxEnergy;
+}
+int maximumEnergy(vector<int>& energy, int k) {
+    
+    return solve(energy, k);
+}
+int main() {
+
+    vector<int> energy = {5, 2, -10, -5, 1};
+    int k = 3;
+
+    int result = maximumEnergy(energy, k);
+    cout << result << endl;
+
+    return 0;
+}
+*/
+
+//                        Find Resultant Array After Removing Anagrams
+
+//                                         Approach 1
+/*
+bool checkAnagram(string& s1, string& s2) {
+
+    int arr[26] = {0};
+    for(char& ch : s1) {
+        arr[ch-'a']++;
+    }
+
+    for(char& ch : s2) {
+        arr[ch-'a']--;
+    }
+        
+    for(int i=0; i<26; i++) {
+        if(arr[i] != 0) {
+            return false;
+        }
+    }
+    return true;
+}
+vector<string> removeAnagrams(vector<string>& words) {
+
+    int n = words.size();
+
+    vector<string> result;
+    result.push_back(words[0]);
+    for(int i=1; i<n; i++) {
+        if(!checkAnagram(words[i], result.back())) {
+            result.push_back(words[i]);
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<string> words = {"abba","baba","bbaa","cd","cd"};
+
+    vector<string> ans = removeAnagrams(words);
+    for(auto& w : ans) {
+        cout << w << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+bool checkAnagram(string s1, string s2) {
+
+    sort(s1.begin(), s1.end());
+    sort(s2.begin(), s2.end());
+
+    return s1 == s2;
+}
+vector<string> removeAnagrams(vector<string>& words) {
+
+    int n = words.size();
+
+    vector<string> result;
+    result.push_back(words[0]);
+    for(int i=1; i<n; i++) {
+        if(!checkAnagram(words[i], result.back())) {
+            result.push_back(words[i]);
+        }
+    }
+    return result;
+}
+int main() {
+
+    vector<string> words = {"abba","baba","bbaa","cd","cd"};
+
+    vector<string> ans = removeAnagrams(words);
+    for(auto& w : ans) {
+        cout << w << " ";
+    }
+    cout << endl;
+
+    return 0;
+}
+*/
+
+//                          Adjacent Increasing Subarrays Detection I
+
+//                                         Approach 1
+/*
+bool isIncreasing(vector<int>& nums, int start, int end) {
+
+    for(int i = start + 1; i < end; i++) {
+        if(nums[i] <= nums[i-1]) {
+            return false;
+        }
+    }
+    return true;
+}
+bool hasIncreasingSubarrays(vector<int>& nums, int k) {
+
+    int n = nums.size();
+    for(int start = 0; start + 2*k <= n; start++) {
+        bool firstInc = isIncreasing(nums, start, start + k);
+        bool secondInc = isIncreasing(nums, start + k, start + 2*k);
+        if(firstInc && secondInc) {
+            return true;
+        }
+    }
+    return false;
+}
+int main() {
+
+    vector<int> nums = {2, 5, 7, 8, 9, 2, 3, 4, 3, 1};
+    int k = 3;
+
+    if(hasIncreasingSubarrays(nums, k)) {
+        cout << "True";
+    } 
+    else {
+        cout << "False";
+    }
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+bool hasIncreasingSubarrays(vector<int>& nums, int k) {
+
+    int n = nums.size();
+
+    int currRun = 1;
+    int prevRun = 0;
+    for(int i=1; i<n; i++) {
+        if(nums[i] > nums[i-1]) {
+            currRun++;
+        } 
+        // Increaseing order break hogaya yaha par
+        else { 
+            prevRun = currRun;
+            currRun = 1;
+        }
+
+        // We can accomodate two subarrays in it length. >= k
+        if(currRun >= 2*k) { 
+            return true;
+        }
+
+        if(min(currRun, prevRun) >= k) {
+            return true;
+        }
+    }
+    return false;
+}
+int main() {
+
+    vector<int> nums = {2, 5, 7, 8, 9, 2, 3, 4, 3, 1};
+    int k = 3;
+
+    if(hasIncreasingSubarrays(nums, k)) {
+        cout << "True";
+    } 
+    else {
+        cout << "False";
+    }
+
+    return 0;
+}
+*/
+
+//                             Adjacent Increasing Subarrays Detection II
+/*
+int maxIncreasingSubarrays(vector<int>& nums) {
+
+    int n = nums.size();
+
+    int currRun = 1;
+    int prevRun = 0;
+
+    int maxResult = 0;
+    for(int i=1; i<n; i++) {
+        if(nums[i] > nums[i-1]) {
+            currRun++;
+        } 
+        // Increasing order breaks here
+        else { 
+            prevRun = currRun;
+            currRun = 1;
+        }
+
+        maxResult = max(maxResult, currRun/2);
+        maxResult = max(maxResult, min(prevRun, currRun));
+    }
+    return maxResult;
+}
+int main() {
+
+    vector<int> nums = {2, 5, 7, 8, 9, 2, 3, 4, 3, 1};
+    cout << maxIncreasingSubarrays(nums);
+
+    return 0;
+}
+*/
+
+//                              Calculate Money in Leetcode Bank
+
+//                                         Approach 1
+/*
+int totalMoney(int n) {
+
+    int result = 0;
+        
+    int monday_money = 1;    
+    while(n>0) {      
+        int money = monday_money;
+        for(int day = 1; day <= min(n, 7); day++) {
+            result += money++;
+        }    
+        n -= 7;
+        monday_money += 1;
+    }    
+    return result;    
+}
+int main() {
+
+    int n = 10; 
+    cout << totalMoney(n);
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+int totalMoney(int n) {
+
+    int weeks  = n/7;
+
+    int weeksmoney = 0;
+    int money = 28;
+    for(int week = 1; week <= weeks; week++) { 
+        weeksmoney += money;
+        money += 7;
+    }   
+    
+    int days  = n%7;
+    int daysmoney = 0;
+    money = weeks + 1;
+    for(int day = 1; day <= days; day++) { 
+        daysmoney += money;
+        money++;
+    }
+        
+    return daysmoney + weeksmoney;
+}
+int main() {
+
+    int n = 10; 
+    cout << totalMoney(n);
+
+    return 0;
+}
+*/
+
+//                                        Simple Bank System
+/*
+class Bank {
+
+    public:
+        vector<long long> balance;
+        int n;
+
+        Bank(vector<long long>& balance) {
+
+            n = balance.size();
+            this->balance = balance;
+            cout << "null" << endl;
+        }
+        bool transfer(int account1, int account2, long long money) {
+
+            if(account1 > n || account2 > n || balance[account1-1] < money) {
+                return false;
+            }
+            balance[account1 - 1] -= money;
+            balance[account2 - 1] += money;
+            return true;
+        }
+        bool deposit(int account, long long money) {
+
+            if(account > n) {
+                return false;
+            }
+            balance[account-1] += money;
+            return true;
+        }
+        bool withdraw(int account, long long money) {
+
+            if(account > n || balance[account-1] < money) {
+                return false;
+            }
+            balance[account-1] -= money;
+            return true;
+        }
+};
+int main() {
+
+    cout << boolalpha;
+
+    // ["Bank"]
+    vector<long long> balances = {10, 100, 20, 50, 30};
+    Bank bank(balances);
+
+    // ["withdraw", 3, 10]
+    cout << bank.withdraw(3, 10) << endl;
+
+    // ["transfer", 5, 1, 20]
+    cout << bank.transfer(5, 1, 20) << endl;
+
+    // ["deposit", 5, 20]
+    cout << bank.deposit(5, 20) << endl;
+
+    // ["transfer", 3, 4, 15]
+    cout << bank.transfer(3, 4, 15) << endl;
+
+    // ["withdraw", 10, 50]
+    cout << bank.withdraw(10, 50) << endl;
+
+    return 0;
+}
+*/
+
+//                           Number of Smooth Descent Periods of a Stock
+/*
+long long getDescentPeriods(vector<int>& prices) {
+
+    long long result = 1;
+    long long count = 1;
+    for(int i=1; i < prices.size(); i++) {
+        if(prices[i-1] - prices[i] == 1) {
+            count++;
+        }
+        else {
+            count = 1;
+        }
+        result += count;
+    }
+    return result;
+}
+int main() {
+
+    vector<int> prices = {3, 2, 1, 4};
+    cout << getDescentPeriods(prices);
+
+    return 0;
+}
+*/
+
+//                              Smallest Number With All Set Bits
+
+//                                         Approach 1
+/*
+bool isAllBitsSet(int x) {
+
+    return (x & (x+1)) == 0;
+}
+int smallestNumber(int n) {
+        
+    int result = n;
+    while(!isAllBitsSet(result)) {
+        result++;
+    }
+    return result;
+}
+int main() {
+    
+    int n = 10;
+    cout << smallestNumber(n);
+
+    return 0;
+}
+*/
+//                                         Approach 2
+/*
+int smallestNumber(int n) {
+
+    int result = 1;
+    while(result < n) {
+        result = 2*result + 1;
+    }
+    return result;
+}
+int main() {
+    
+    int n = 10;
+    cout << smallestNumber(n);
+
+    return 0;
+}
+*/
+
+//                                        Bag of Tokens
+/*
+int bagOfTokensScore(vector<int>& tokens, int P) {
+
+    int n = tokens.size();
+    sort(tokens.begin(), tokens.end());
+        
+    // While losing power, I will choose the smallest token
+    // While gaining power, I will choose the largest token
+    int currScore = 0;
+    int maxScore = 0;
+    int l = 0;
+    int r = n-1;
+    while(l <= r) {
+        if(P >= tokens[l]) {
+            currScore++;
+            maxScore = max(maxScore, currScore); 
+            P -= tokens[l];
+            l++;    
+        } 
+        else if(currScore >= 1) {
+            currScore--;
+            P += tokens[r]; //choose largest token
+            r--;            
+        } 
+        else {
+            return maxScore;
+        }
+    }
+    return maxScore;
+}
+int main() {
+
+    vector<int> tokens = {100, 200, 300, 400};
+    int P = 200;
+
+    int result = bagOfTokensScore(tokens, P);
+    cout << "Maximum Score: " << result << endl;
+
+    return 0;
+}
+*/
+
+//                            Maximum Total Damage With Spell Casting
+
+//                                         Recursive
+/*
+typedef long long ll;                                          
+long long solve(vector<ll>& nums, int i, unordered_map<ll, ll>& mp) {
+
+    if(i >= nums.size()) { 
+        return 0;
+    }
+        
+    // Skip current damage
+    ll skip = solve(nums, i+1, mp);
+
+    // Take current damage
+    int j = lower_bound(begin(nums), end(nums), nums[i] + 3) - begin(nums);
+    ll take = nums[i] * mp[nums[i]] + solve(nums, j, mp);
+
+    return max(skip, take);
+}
+long long maximumTotalDamage(vector<int>& power) {
+
+    unordered_map<ll, ll> mp;
+    for(int& x : power) {
+        mp[x]++;
+    }
+
+    vector<ll> nums;
+    for(auto& it : mp) {
+        nums.push_back(it.first);
+    }
+
+    sort(begin(nums), end(nums));
+    return solve(nums, 0, mp);
+}
+int main() {
+
+    vector<int> power = {1, 1, 3, 4};
+    cout << "Maximum Total Damage: " << maximumTotalDamage(power) << endl;
+
+    return 0;
+}
+*/
+//                                         Top-Down
+/*
+typedef long long ll;                                          
+long long solve(vector<ll>& nums, int i, unordered_map<ll, ll>& mp, vector<ll>& dp) {
+
+    if(i >= nums.size()) { 
+        return 0;
+    }
+    
+    if(dp[i] != -1) {
+        return dp[i];
+    }
+
+    // Skip current damage
+    ll skip = solve(nums, i+1, mp, dp);
+
+    // Take current damage
+    int j = lower_bound(begin(nums), end(nums), nums[i] + 3) - begin(nums);
+    ll take = nums[i] * mp[nums[i]] + solve(nums, j, mp, dp);
+
+    return dp[i] = max(skip, take);
+}
+long long maximumTotalDamage(vector<int>& power) {
+
+    unordered_map<ll, ll> mp;
+    for(int& x : power) {
+        mp[x]++;
+    }
+
+    vector<ll> nums;
+    for(auto& it : mp) {
+        nums.push_back(it.first);
+    }
+
+    vector<ll> dp(nums.size() + 1, -1);
+
+    sort(begin(nums), end(nums));
+    return solve(nums, 0, mp, dp);
+}
+int main() {
+
+    vector<int> power = {1, 1, 3, 4};
+    cout << "Maximum Total Damage: " << maximumTotalDamage(power) << endl;
+
+    return 0;
+}
+*/
+//                                         Bottom-Up
+/*
+typedef long long ll;                                          
+long long solve(vector<ll>& nums, unordered_map<ll, ll>& mp) {
+
+    vector<ll> dp(nums.size(), 0);
+
+    for(int i = nums.size()-1; i >= 0; i--) {
+        // Skip current damage
+        ll skip = 0;
+        if(i+1 < nums.size()) {
+            skip = dp[i+1];
+        }
+        // Take current damage
+        int j = lower_bound(begin(nums), end(nums), nums[i] + 3) - begin(nums);
+        ll take = nums[i] * mp[nums[i]];
+        if(j < nums.size()) {
+            take += dp[j];
+        }
+        dp[i] = max(skip, take);
+    }
+    return dp[0];
+}
+long long maximumTotalDamage(vector<int>& power) {
+
+    unordered_map<ll, ll> mp;
+    for(int& x : power) {
+        mp[x]++;
+    }
+
+    vector<ll> nums;
+    for(auto& it : mp) {
+        nums.push_back(it.first);
+    }
+
+    sort(begin(nums), end(nums));
+    return solve(nums, mp);
+}
+int main() {
+
+    vector<int> power = {1, 1, 3, 4};
+    cout << "Maximum Total Damage: " << maximumTotalDamage(power) << endl;
+
+    return 0;
+}
+*/
+
+//                             Best Time to Buy and Sell Stock V
+
+//                                          Recursive
+/*
+// CASE:
+// 0 -> You have not bought anything and you have not short-sold anything.
+// 1 -> Normal transaction - you had bought, now you will sell normally
+// 2 -> Short selling transaction - you had sold, now you will buy back
+long long solve(int i, int k, int CASE, vector<int>& prices) {
+
+    if(i == prices.size()) {
+        if(CASE == 0) {
+            return 0;
+        }
+        // An unfinished transaction is invalid.
+        return INT_MIN; 
+    }
+
+    long long take = INT_MIN;
+    long long dontTake;
+
+    // Do nothing today
+    dontTake = solve(i+1, k, CASE, prices);
+    // Take action
+    if(k>0) {
+        if(CASE == 1) {
+            // Sell today (complete normal transaction)
+            take = prices[i] + solve(i+1, k-1, 0, prices);
+        }
+        else if(CASE == 2) {
+            // Buy back today (complete short transaction)
+            take = -prices[i] + solve(i+1, k-1, 0, prices);
+        }
+        else {
+            // CASE == 0: Start a transaction
+            take = max(-prices[i] + solve(i+1, k, 1, prices), prices[i] + solve(i+1, k, 2, prices));
+        }
+    }
+    return max(take, dontTake);
+}
+long long maximumProfit(vector<int>& prices, int k) {
+
+    return solve(0, k, 0, prices);
+}
+int main() {
+
+    vector<int> prices = {1, 7, 9, 8, 2};
+    int k = 2;
+
+    cout << "Maximum Profit: " << maximumProfit(prices, k) << endl;
+
+    return 0;
+}
+*/
+//                                          Top-Down
+/*
+// CASE:
+// 0 -> You have not bought anything and you have not short-sold anything.
+// 1 -> Normal transaction - you had bought, now you will sell normally
+// 2 -> Short selling transaction - you had sold, now you will buy back
+long long solve(int i, int k, int CASE, vector<int>& prices, vector<vector<vector<long long>>>& dp) {
+
+    if(i == prices.size()) {
+        if(CASE == 0) {
+            return 0;
+        }
+        // An unfinished transaction is invalid.
+        return INT_MIN; 
+    }
+
+    if(dp[i][k][CASE] != -1) {
+        return dp[i][k][CASE];
+    }
+
+    long long take = INT_MIN;
+    long long dontTake;
+
+    // Do nothing today
+    dontTake = solve(i+1, k, CASE, prices, dp);
+    // Take action
+    if(k>0) {
+        if(CASE == 1) {
+            // Sell today (complete normal transaction)
+            take = prices[i] + solve(i+1, k-1, 0, prices, dp);
+        }
+        else if(CASE == 2) {
+            // Buy back today (complete short transaction)
+            take = -prices[i] + solve(i+1, k-1, 0, prices, dp);
+        }
+        else {
+            // CASE == 0: Start a transaction
+            take = max(-prices[i] + solve(i+1, k, 1, prices, dp), prices[i] + solve(i+1, k, 2, prices, dp));
+        }
+    }
+    return dp[i][k][CASE] = max(take, dontTake);
+}
+long long maximumProfit(vector<int>& prices, int k) {
+
+    int n = prices.size();
+    vector<vector<vector<long long>>> dp(n, vector<vector<long long>>(k+1, vector<long long>(3, -1)));
+
+    return solve(0, k, 0, prices, dp);
+}
+int main() {
+
+    vector<int> prices = {1, 7, 9, 8, 2};
+    int k = 2;
+
+    cout << "Maximum Profit: " << maximumProfit(prices, k) << endl;
+
+    return 0;
+}
+*/
+//                                          Bottom-Up
+/*
+// CASE:
+// 0 -> You have not bought anything and you have not short-sold anything.
+// 1 -> Normal transaction - you had bought, now you will sell normally
+// 2 -> Short selling transaction - you had sold, now you will buy back
+long long solve(vector<int>& prices, int K) {
+
+    int n = prices.size();
+
+    vector<vector<vector<long long>>> dp(n+1, vector<vector<long long>>(K+1, vector<long long>(3, 0)));
+
+    for(int k=0; k <= K; k++) {
+        dp[n][k][0] = 0;
+        dp[n][k][1] = INT_MIN;
+        dp[n][k][2] = INT_MIN;
+    }
+
+    for(int i = n-1; i >= 0; i--) {
+        for(int k=0; k <= K; k++) {
+            for(int CASE = 0; CASE <=2; CASE++) {
+                long long take = INT_MIN;
+                long long dontTake;
+                // Do nothing today
+                dontTake = dp[i+1][k][CASE];
+                // Take action
+                if(k>0) {
+                    if(CASE == 1) {
+                        // Sell today (complete normal transaction)
+                        take = prices[i] + dp[i+1][k-1][0];
+                    }
+                    else if(CASE == 2) {
+                        // Buy back today (complete short transaction)
+                        take = -prices[i] + dp[i+1][k-1][0];
+                    }
+                    else {
+                        // CASE == 0: Start a transaction
+                        take = max(-prices[i] + dp[i+1][k][1], prices[i] + dp[i+1][k][2]);
+                    }
+                }
+                dp[i][k][CASE] = max(take, dontTake);
+            }
+        }
+    }
+    return dp[0][K][0];
+}
+long long maximumProfit(vector<int>& prices, int k) {
+
+    return solve(prices, k);
+}
+int main() {
+
+    vector<int> prices = {1, 7, 9, 8, 2};
+    int k = 2;
+
+    cout << "Maximum Profit: " << maximumProfit(prices, k) << endl;
 
     return 0;
 }
